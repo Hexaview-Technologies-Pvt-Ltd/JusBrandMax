@@ -14,7 +14,8 @@ import {
   renderHtml,
   openHistory,
   computeDeltas,
-  createClaudeProvider,
+  createProviderFor,
+  keyEnvFor,
   type ClaudeProvider,
   type BrandReport,
   type ReportDeltas,
@@ -92,7 +93,7 @@ function fmtPp(x: number): string {
 
 function printSummary(out: (s: string) => void, r: BrandReport, deltas: ReportDeltas | null): void {
   const d = r.dimensions;
-  out(`\nBrand Visibility on Claude — ${r.brand}`);
+  out(`\nBrand Visibility on ${r.engine} — ${r.brand}`);
   out(`Overall: ${r.overall}/100  (model ${r.model}, ${r.promptCount} prompts, ${r.sampleCount} samples)`);
   out(`  Presence       ${(d.presence.visibility * 100).toFixed(0)}%`);
   out(`  Share of Voice ${(d.shareOfVoice.brandShare * 100).toFixed(0)}%`);
@@ -136,18 +137,15 @@ export async function runCli(argv: string[], partial: Partial<CliDeps> = {}): Pr
         deps.stderr(`No config at ${configPath}. Run 'jusbrandmax init' first.`);
         return 1;
       }
+      const config = loadBrandConfig(configPath);
+      const keyEnv = keyEnvFor(config.provider);
       const usingReal = !partial.makeProvider;
-      if (usingReal && !deps.env["ANTHROPIC_API_KEY"]) {
-        deps.stderr("ANTHROPIC_API_KEY is not set (bring-your-own-key). Set it and retry.");
+      if (usingReal && !deps.env[keyEnv]) {
+        deps.stderr(`${keyEnv} is not set (bring-your-own-key). Set it and retry.`);
         return 1;
       }
-      const config = loadBrandConfig(configPath);
-      const baseURL = deps.env["ANTHROPIC_BASE_URL"];
-      const makeProvider =
-        partial.makeProvider ??
-        ((k?: string) =>
-          createClaudeProvider({ ...(k ? { apiKey: k } : {}), ...(baseURL ? { baseURL } : {}) }));
-      const provider = makeProvider(deps.env["ANTHROPIC_API_KEY"]);
+      const makeProvider = partial.makeProvider ?? (() => createProviderFor(config, deps.env));
+      const provider = makeProvider(deps.env[keyEnv]);
 
       const report = await runReport(provider, config, deps.now ? { now: deps.now() } : {});
 

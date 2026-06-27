@@ -39,9 +39,10 @@ an injected fake.
 
 ## Principles (don't regress these)
 
+- **Zero runtime dependencies** — the shipped code imports only the Node standard library (`fetch`, `node:sqlite`, `node:readline`, …). `dependencies: {}` in every package. New engines are added as `fetch`-based providers, **never SDKs**; protocol support (e.g. MCP) is hand-written JSON-RPC. Dev-only tools (TypeScript, Vitest) are fine. This is the enterprise USP — do not add a runtime dependency without a very strong reason and explicit sign-off.
 - **MIT, no telemetry, no phone-home.**
 - **Bring-your-own-key** — never hardcode or transmit keys.
-- **Local-first** — data stays on the user's machine.
+- **Local-first / air-gappable** — data stays on the user's machine; no egress beyond the configured LLM endpoint.
 - **White-label** — generated reports carry no branding unless the user opts in.
 
 ## Before opening a PR

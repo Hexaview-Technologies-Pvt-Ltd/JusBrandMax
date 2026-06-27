@@ -48,10 +48,27 @@ describe("runReport", () => {
 
     const report = await runReport(provider, config, { now: "2026-06-27T00:00:00Z" });
     expect(report.brand).toBe("Acme");
+    expect(report.engine).toBe("Claude");
     expect(report.dimensions.presence.visibility).toBe(1);
     expect(report.dimensions.sentiment.counts.positive).toBe(2);
     expect(report.dimensions.accuracy.total).toBe(2);
     expect(report.overall).toBe(90);
+  });
+
+  it("labels the engine from the config provider", async () => {
+    const provider: ClaudeProvider = {
+      ask: async (prompt, opts) => {
+        if (opts.system?.includes("portrays"))
+          return { prompt, model: opts.model, responses: ['{"label":"positive","rationale":"x"}'] };
+        if (opts.system?.includes("fact-check"))
+          return { prompt, model: opts.model, responses: ['{"claims":[]}'] };
+        return { prompt, model: opts.model, responses: ["Acme is great."] };
+      },
+    };
+    const config = resolveBrandConfig({ brand: "Acme", prompts: ["q?"], provider: "openai", model: "gpt-x" });
+    const report = await runReport(provider, config, { now: "2026-06-27T00:00:00Z" });
+    expect(report.engine).toBe("OpenAI");
+    expect(renderMarkdown(report)).toContain("Brand Visibility on OpenAI — Acme");
   });
 });
 

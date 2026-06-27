@@ -15,6 +15,7 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 
 ## Hard constraints (never violate)
 
+- **Zero runtime dependencies.** Shipped code imports only the Node standard library (`fetch`, `node:sqlite`, `node:readline`). No SDKs (Anthropic, MCP), no zod. This is the enterprise USP. Dev-only tools (TypeScript, Vitest) are allowed.
 - **MIT-licensed, fully open source.** No paid tier, no telemetry, no phone-home.
 - **Claude-only** for v0.1. Engine stays model-agnostic internally, but only the Claude provider is wired up.
 - **Bring-your-own-key.** Read `ANTHROPIC_API_KEY` from env; never hardcode or commit keys.
@@ -26,7 +27,7 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 ## Stack (decided — don't re-litigate)
 
 - TypeScript, Node ≥ 20, **pnpm workspaces** monorepo.
-- `packages/engine` — core library: Claude provider (official Anthropic SDK), prompt runner, scorers, storage, report generator.
+- `packages/engine` — core library: Claude provider (raw `fetch`, zero deps) + OpenAI-compatible provider, prompt runner, scorers, storage, report generator.
 - `packages/cli` — Claude Code plugin: `plugin.json`, slash commands/skills, hooks; depends on `engine`.
 - `packages/cowork` — MCP server (stdio) + Agent Skill manifest; depends on `engine`.
 - Storage: local **SQLite** for run history; config + reports as files on disk.

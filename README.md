@@ -3,13 +3,20 @@
 **The open-source brand command center for Claude.**
 Measure how visible your brand is on Claude, see exactly what Claude tells people about you, and fix it — without leaving Claude.
 
-![license](https://img.shields.io/badge/license-MIT-green) ![tests](https://img.shields.io/badge/tests-49%20passing-brightgreen) ![node](https://img.shields.io/badge/node-%E2%89%A520-blue) ![price](https://img.shields.io/badge/price-%240-blue) ![BYO key](https://img.shields.io/badge/bring--your--own--key-yes-orange)
+![license](https://img.shields.io/badge/license-MIT-green) ![runtime deps](https://img.shields.io/badge/runtime%20deps-0-success) ![tests](https://img.shields.io/badge/tests-62%20passing-brightgreen) ![node](https://img.shields.io/badge/node-%E2%89%A520-blue) ![price](https://img.shields.io/badge/price-%240-blue) ![BYO key](https://img.shields.io/badge/bring--your--own--key-yes-orange)
 
 > Built by **Kashi** ([linkedin](https://www.linkedin.com/in/kashiks/)) and
 > **Rajan** ([linkedin](https://www.linkedin.com/in/thiyagarajan/)), founders of
 > [Kalmantic](https://www.kalmantic.com). **MIT licensed.**
 
 When buyers research your category, more and more of them ask **Claude** instead of Google. If Claude doesn't mention you — or worse, says something wrong about you — you lose the deal before you ever hear about it. jusBrandMax turns that invisible conversation into a **scored report you can act on**, runs entirely on your machine with your own API key, and lets Claude *fix* what it finds in the same session. Every paid tool in this space is closed SaaS at **$29–$5,000+/mo**; jusBrandMax is **$0, open source, and self-hostable.**
+
+> ### 🔒 Built to pass Enterprise IT review
+> **Zero runtime dependencies.** The shipped code imports **only the Node standard library** — `fetch` for the API, `node:sqlite` for history, `node:readline` for the MCP server. No Anthropic SDK, no MCP SDK, no zod, no transitive supply chain.
+> - **Nothing to audit** — `dependencies: {}` in every package. `npm ls --prod` is empty.
+> - **No data egress** beyond the one LLM endpoint *you* configure (bring-your-own-key; the key never leaves your machine).
+> - **Self-hostable & air-gappable** — point it at an internal OpenAI-compatible model and it never calls out.
+> - **Auditable by inspection** — every score is plain, commented TypeScript compiled to plain JS.
 
 ---
 
@@ -81,6 +88,11 @@ Gaps:  "Which CRM has the best automation?" → Salesforce, HubSpot
 
 Reports are **white-label by default** (no jusBrandMax branding) and saved to local SQLite history so `watch` can show deltas over time.
 
+### Measure beyond Claude, run beyond Claude Code (P2)
+
+- **Measure other engines** — set `"provider": "openai"` (+ optional `"baseURL"`) in `brand.config.json` to run the *same* report against any **OpenAI-compatible** endpoint: OpenAI, OpenRouter, Together, Groq, or a **local/internal model** (Ollama, llama.cpp). The report retitles to "Brand Visibility on OpenAI", etc. Claude stays the default and the hero. *(Still zero-dependency — it's `fetch` either way.)*
+- **Run in other agents** — the Cowork server is a standard stdio MCP server, so **OpenCode, Codex CLI, Cursor, Cline, and Windsurf** can call the same tools today. Point their MCP config at `node /path/to/jusBrandMax/packages/cowork/dist/main.js`.
+
 ---
 
 ## jusBrandMax vs. the closed-SaaS field
@@ -90,6 +102,8 @@ jusBrandMax is the only column you can read the source of, run for free, and hos
 | | **jusBrandMax** | Profound | Peec | AthenaHQ | Scrunch | Otterly |
 |---|---|---|---|---|---|---|
 | **License** | **MIT (open)** ★ | Closed | Closed | Closed | Closed | Closed |
+| **Zero runtime dependencies** | **✓ (stdlib only)** ★ | n/a (SaaS) | n/a | n/a | n/a | n/a |
+| **Enterprise-IT auditable / air-gappable** | **✓** ★ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | **Entry price** | **$0** ★ | ~$2k–5k+/mo, sales-gated | €89/mo | $95/mo | $250/mo | $29/mo |
 | **Self-host / local-first** | **✓** ★ | ✗ | ✗ | ✗ | ✗ | ✗ |
 | **Open / auditable scoring** | **✓ code** ★ | black box | black box | black box | black box | black box |
@@ -244,7 +258,7 @@ Everything below is **MIT-licensed and free**.
 
 **Tally:** 61 features — **34 distinct (★)**, 27 at-or-above best-in-class parity (⚔️) — all MIT.
 
-> **Shipping now (v0.1):** dimensions 2–4, 7, 9–10, 15–16, 49–50 and the Claude-native core (54–58, 60–61) are implemented and tested. The rest of the matrix is the public roadmap below.
+> **Shipping now (v0.1):** dimensions 2–4, 7, 9–10, 15–16, 49–50 and the Claude-native core (54–58, 60–61) are implemented and tested (62 tests), **with zero runtime dependencies** and an OpenAI-compatible provider for measuring non-Claude engines. The rest of the matrix is the public roadmap below.
 
 ---
 
@@ -270,9 +284,11 @@ Everything below is **MIT-licensed and free**.
 
 ## Roadmap
 
-- **v0.1 (now):** core report (6 dimensions), competitor leaderboard + gaps, local history + deltas, both plugins, MCP server, CI mode. 49 tests.
-- **Next:** Claude crawler log analyzer (#32–37), citation intelligence (#27–31), the optimization simulator (#39) and in-session content studio (#41), scheduled runs + alerts (#51–52).
-- **Later:** multi-brand workspaces, the full demand-intelligence suite, PDF export.
+- **v0.1 (now):** core report (6 dimensions), competitor leaderboard + gaps, local history + deltas, both plugins, **zero-dependency** MCP server, CI mode, and an **OpenAI-compatible provider** (P2) for measuring non-Claude engines. 62 tests.
+- **Next:** **cross-engine diff** (Claude vs OpenAI side-by-side), public **visibility SVG badge** + **GitHub Action CI gate**, first-class docs/config for **OpenCode / Codex / Cursor**, Claude crawler log analyzer (#32–37), citation intelligence (#27–31).
+- **Later:** optimization simulator (#39) + in-session content studio (#41), scheduled runs + alerts (#51–52), multi-brand workspaces, "fix-it PR" generator, ChatGPT/Gemini consumer-surface drivers, PDF export.
+
+Everything stays **zero-runtime-dependency** — new engines are added as `fetch`-based providers, never SDKs.
 
 PRs welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md) (every new scorer ships as pure, commented, unit-tested code). Building it or curious about status? See [BUILD_GOAL.md](./BUILD_GOAL.md).
 

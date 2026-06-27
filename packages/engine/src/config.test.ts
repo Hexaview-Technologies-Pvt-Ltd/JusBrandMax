@@ -28,6 +28,22 @@ describe("resolveBrandConfig", () => {
   it("rejects non-positive samples", () => {
     expect(() => resolveBrandConfig({ brand: "A", prompts: ["x"], samples: 0 })).toThrow(/samples/);
   });
+
+  it("defaults provider to anthropic and trims baseURL", () => {
+    const c = resolveBrandConfig({ brand: "A", prompts: ["x"], baseURL: " http://local:11434/v1 " });
+    expect(c.provider).toBe("anthropic");
+    expect(c.baseURL).toBe("http://local:11434/v1");
+  });
+
+  it("accepts the openai provider", () => {
+    expect(resolveBrandConfig({ brand: "A", prompts: ["x"], provider: "openai" }).provider).toBe("openai");
+  });
+
+  it("rejects an unknown provider", () => {
+    expect(() =>
+      resolveBrandConfig({ brand: "A", prompts: ["x"], provider: "gemini" as never }),
+    ).toThrow(/provider/);
+  });
 });
 
 describe("parseBrandConfig", () => {

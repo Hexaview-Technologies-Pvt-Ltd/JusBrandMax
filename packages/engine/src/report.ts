@@ -9,6 +9,7 @@
 import type { AskResult, ClaudeProvider } from "./provider.js";
 import type { BrandConfig } from "./config.js";
 import { detectMention } from "./mentions.js";
+import { providerEngineLabel } from "./provider-factory.js";
 import {
   scoreVisibility,
   scoreShareOfVoice,
@@ -34,6 +35,8 @@ import {
 
 export interface BrandReport {
   brand: string;
+  /** Human label of the measured engine, e.g. "Claude" or "OpenAI". */
+  engine: string;
   model: string;
   generatedAt: string;
   promptCount: number;
@@ -53,6 +56,8 @@ export interface BrandReport {
 
 export interface ComputeReportInput {
   brand: string;
+  /** Engine label; defaults to "Claude". */
+  engine?: string;
   model: string;
   generatedAt: string;
   brandNames: string[];
@@ -85,6 +90,7 @@ export function computeReport(input: ComputeReportInput): BrandReport {
 
   return {
     brand,
+    engine: input.engine ?? "Claude",
     model,
     generatedAt,
     promptCount: presence.promptCount,
@@ -134,6 +140,7 @@ export async function runReport(
 
   return computeReport({
     brand: config.brand,
+    engine: providerEngineLabel(config.provider),
     model: config.model,
     generatedAt: opts.now ?? new Date().toISOString(),
     brandNames,
@@ -155,7 +162,7 @@ const pct = (x: number): string => `${(x * 100).toFixed(0)}%`;
 export function renderMarkdown(r: BrandReport, opts: RenderOptions = {}): string {
   const d = r.dimensions;
   const lines: string[] = [
-    `# Brand Visibility on Claude — ${r.brand}`,
+    `# Brand Visibility on ${r.engine} — ${r.brand}`,
     "",
     `**Overall: ${r.overall}/100** · model \`${r.model}\` · ${r.promptCount} prompts · ${r.sampleCount} samples · ${r.generatedAt}`,
     "",

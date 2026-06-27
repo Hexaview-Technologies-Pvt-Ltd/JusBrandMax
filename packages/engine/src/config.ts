@@ -6,6 +6,9 @@
  */
 import { readFileSync } from "node:fs";
 
+/** Which LLM engine to measure. Claude is the default (P1); OpenAI-compatible is P2. */
+export type ProviderName = "anthropic" | "openai";
+
 /** Fully-resolved config with all defaults applied. */
 export interface BrandConfig {
   /** The brand whose visibility we measure. */
@@ -16,7 +19,11 @@ export interface BrandConfig {
   competitors: string[];
   /** The category prompts Claude is asked. */
   prompts: string[];
-  /** Claude model under test (itself a measured dimension — see feature #58). */
+  /** Which engine to measure (default "anthropic" → Claude). */
+  provider: ProviderName;
+  /** Override the API base URL (OpenAI-compatible engines, self-hosted, etc.). */
+  baseURL?: string;
+  /** Model under test (itself a measured dimension — see feature #58). */
   model: string;
   /** Repeated samples per prompt, for statistical confidence (feature #14). */
   samples: number;
@@ -34,6 +41,8 @@ export interface BrandConfigInput {
   aliases?: string[];
   competitors?: string[];
   prompts?: string[];
+  provider?: ProviderName;
+  baseURL?: string;
   model?: string;
   samples?: number;
   persona?: string;
@@ -60,12 +69,18 @@ export function resolveBrandConfig(input: BrandConfigInput): BrandConfig {
   if (!Number.isInteger(samples) || samples < 1) {
     throw new Error("BrandConfig: 'samples' must be a positive integer.");
   }
+  const provider = input.provider ?? "anthropic";
+  if (provider !== "anthropic" && provider !== "openai") {
+    throw new Error("BrandConfig: 'provider' must be 'anthropic' or 'openai'.");
+  }
 
   return {
     brand: input.brand.trim(),
     aliases: cleanList(input.aliases),
     competitors: cleanList(input.competitors),
     prompts: cleanList(input.prompts),
+    provider,
+    ...(input.baseURL ? { baseURL: input.baseURL.trim() } : {}),
     model: input.model?.trim() || DEFAULT_MODEL,
     samples,
     ...(input.persona ? { persona: input.persona.trim() } : {}),
