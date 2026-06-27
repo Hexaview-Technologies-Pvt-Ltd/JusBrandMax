@@ -48,6 +48,20 @@ describe("runCli", () => {
     expect(await runCli(["init"], { cwd, stdout: log.out, stderr: log.out })).toBe(1);
   });
 
+  it("lists packs and seeds a config from a category", async () => {
+    const cwd = mkdtempSync(join(tmpdir(), "jbm-"));
+    const log = collector();
+    expect(await runCli(["packs"], { cwd, stdout: log.out, stderr: log.out })).toBe(0);
+    expect(log.text()).toContain("ecommerce");
+
+    expect(await runCli(["init", "--category", "travel"], { cwd, stdout: () => {}, stderr: () => {} })).toBe(0);
+    const cfg = JSON.parse(readFileSync(join(cwd, "brand.config.json"), "utf8")) as { prompts: string[] };
+    expect(cfg.prompts.join(" ")).toMatch(/destination/);
+
+    const cwd2 = mkdtempSync(join(tmpdir(), "jbm-"));
+    expect(await runCli(["init", "--category", "nope"], { cwd: cwd2, stdout: () => {}, stderr: () => {} })).toBe(1);
+  });
+
   it("report errors without a config", async () => {
     const cwd = mkdtempSync(join(tmpdir(), "jbm-"));
     const log = collector();

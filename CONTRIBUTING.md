@@ -44,6 +44,7 @@ an injected fake.
 - **Bring-your-own-key** — never hardcode or transmit keys.
 - **Local-first / air-gappable** — data stays on the user's machine; no egress beyond the configured LLM endpoint.
 - **White-label** — generated reports carry no branding unless the user opts in.
+- **No third-party trademarks in shipped output** — report templates, category packs, and examples use only generic, descriptive language. The brand under test and its competitors are supplied by the user at runtime, never hardcoded. (There's a unit test guarding packs against this — keep it green.)
 
 ## Before opening a PR
 

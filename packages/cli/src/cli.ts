@@ -16,6 +16,8 @@ import {
   computeDeltas,
   createProviderFor,
   keyEnvFor,
+  getPack,
+  listPacks,
   type ClaudeProvider,
   type BrandReport,
   type ReportDeltas,
@@ -76,7 +78,8 @@ const SAMPLE_CONFIG = {
 const HELP = `jusBrandMax — Brand Visibility on Claude (MIT, open source)
 
 Usage:
-  jusbrandmax init    [--config brand.config.json]
+  jusbrandmax init    [--config brand.config.json] [--category <id>]
+  jusbrandmax packs   list the category report packs (ecommerce, travel, …)
   jusbrandmax report  [--config brand.config.json] [--out brand-report.md]
                       [--format md|html] [--db <path>] [--footer]
   jusbrandmax watch   [--config brand.config.json] [--db <path>]
@@ -127,8 +130,32 @@ export async function runCli(argv: string[], partial: Partial<CliDeps> = {}): Pr
         deps.stderr(`Refusing to overwrite existing ${configPath}`);
         return 1;
       }
-      writeFileSync(configPath, JSON.stringify(SAMPLE_CONFIG, null, 2) + "\n");
-      deps.stdout(`Wrote sample config to ${configPath}. Edit it, then run: jusbrandmax report`);
+      const category = flagStr(flags, "category");
+      let config: typeof SAMPLE_CONFIG = SAMPLE_CONFIG;
+      if (category) {
+        const pack = getPack(category);
+        if (!pack) {
+          deps.stderr(`Unknown category '${category}'. Run 'jusbrandmax packs' to list them.`);
+          return 1;
+        }
+        config = { ...SAMPLE_CONFIG, prompts: pack.prompts };
+      }
+      writeFileSync(configPath, JSON.stringify(config, null, 2) + "\n");
+      deps.stdout(`Wrote ${category ? `'${category}' ` : "sample "}config to ${configPath}.`);
+      deps.stdout(
+        category
+          ? "Replace the <...> placeholders and set your brand + competitors, then run: jusbrandmax report"
+          : "Edit it, then run: jusbrandmax report",
+      );
+      return 0;
+    }
+
+    case "packs": {
+      deps.stdout("Category report packs — trademark-free buyer-intent prompts.");
+      deps.stdout("Use:  jusbrandmax init --category <id>\n");
+      for (const p of listPacks()) {
+        deps.stdout(`  ${p.id.padEnd(22)} ${p.label}`);
+      }
       return 0;
     }
 

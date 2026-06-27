@@ -41,14 +41,24 @@ describe("MCP dispatch (zero-dep JSON-RPC)", () => {
     expect(res.result.capabilities.tools).toBeDefined();
   });
 
-  it("lists three tools", async () => {
+  it("lists all tools", async () => {
     const res = (await dispatch({ jsonrpc: "2.0", id: 2, method: "tools/list" }, deps())) as any;
     expect(res.result.tools.map((t: { name: string }) => t.name).sort()).toEqual([
       "get_history",
       "list_competitors",
+      "list_packs",
       "run_brand_report",
     ]);
-    expect(TOOLS).toHaveLength(3);
+    expect(TOOLS).toHaveLength(4);
+  });
+
+  it("list_packs returns the category packs", async () => {
+    const res = (await dispatch(
+      { jsonrpc: "2.0", id: 5, method: "tools/call", params: { name: "list_packs", arguments: {} } },
+      deps(),
+    )) as any;
+    const out = JSON.parse(res.result.content[0].text);
+    expect(out.packs.map((p: { id: string }) => p.id)).toContain("ecommerce");
   });
 
   it("returns null for the initialized notification", async () => {

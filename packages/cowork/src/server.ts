@@ -12,6 +12,7 @@ import {
   runBrandReportTool,
   getHistoryTool,
   listCompetitorsTool,
+  listPacksTool,
   defaultToolDeps,
   type ToolDeps,
   type RunBrandReportArgs,
@@ -49,6 +50,12 @@ export const TOOLS = [
     description: "Return the competitor leaderboard from the most recent run for a brand.",
     inputSchema: { type: "object", properties: { brand: { type: "string" } }, required: ["brand"] },
   },
+  {
+    name: "list_packs",
+    description:
+      "List the trademark-free category report packs (ecommerce, travel, hospitality, software, hardware, …), or pass a category id to get its prompt set.",
+    inputSchema: { type: "object", properties: { category: { type: "string" } } },
+  },
 ] as const;
 
 interface JsonRpcRequest {
@@ -70,6 +77,8 @@ async function callTool(name: string, args: Record<string, unknown>, deps: ToolD
       return textResult(getHistoryTool({ brand: String(args["brand"] ?? "") }, deps));
     case "list_competitors":
       return textResult(listCompetitorsTool({ brand: String(args["brand"] ?? "") }, deps));
+    case "list_packs":
+      return textResult(listPacksTool(args["category"] ? { category: String(args["category"]) } : {}));
     default:
       throw new Error(`Unknown tool: ${name}`);
   }

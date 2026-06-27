@@ -18,6 +18,10 @@ When buyers research your category, more and more of them ask **Claude** instead
 > - **Self-hostable & air-gappable** — point it at an internal OpenAI-compatible model and it never calls out.
 > - **Auditable by inspection** — every score is plain, commented TypeScript compiled to plain JS.
 
+### Why this matters
+
+Search told people *where to look*; LLMs tell people *what to choose*. Discovery has moved from ten blue links to one synthesized, ranked answer — and that answer is increasingly where the purchase is decided. As LLM shopping and a sponsored **ad layer** arrive, the brands that already measure their presence in answers will be the ones able to defend it. **[Read the thesis →](./THESIS.md)**
+
 ---
 
 ## Install
@@ -67,8 +71,8 @@ jusbrandmax watch     # shows the trend vs your last run
 
 **In Cowork (marketers, in plain chat):**
 
-> **You:** How visible is "Acme CRM" on Claude vs Salesforce and HubSpot?
-> **Claude:** *(calls `run_brand_report`)* Acme CRM scores **65/100**. You're mentioned in 67% of answers — but you're **absent from every "best automation" prompt**, where Salesforce and HubSpot both win. Claude also claimed you have a built-in phone dialer, which your facts don't support. Want me to draft an automation page and a correction?
+> **You:** How visible is "Acme CRM" on Claude vs Globex and Initech?
+> **Claude:** *(calls `run_brand_report`)* Acme CRM scores **65/100**. You're mentioned in 67% of answers — but you're **absent from every "best automation" prompt**, where Globex and Initech both win. Claude also claimed you have a built-in phone dialer, which your facts don't support. Want me to draft an automation page and a correction?
 
 ### What a report looks like (real engine output, [`examples/brand-report.md`](./examples/brand-report.md))
 
@@ -82,8 +86,8 @@ Brand Visibility on Claude — Acme CRM        Overall: 65.3/100
 | Sentiment (net)                 | 1.00  |
 | Accuracy                        | 67% (0 contradicted, 1 unsupported) |
 
-Competitor leaderboard:  1. HubSpot 43% · 2. Acme CRM 29% · 3. Salesforce 29%
-Gaps:  "Which CRM has the best automation?" → Salesforce, HubSpot
+Competitor leaderboard:  1. Initech 43% · 2. Acme CRM 29% · 3. Globex 29%
+Gaps:  "Which CRM has the best automation?" → Globex, Initech
 ```
 
 Reports are **white-label by default** (no jusBrandMax branding) and saved to local SQLite history so `watch` can show deltas over time.
@@ -92,6 +96,19 @@ Reports are **white-label by default** (no jusBrandMax branding) and saved to lo
 
 - **Measure other engines** — set `"provider": "openai"` (+ optional `"baseURL"`) in `brand.config.json` to run the *same* report against any **OpenAI-compatible** endpoint: OpenAI, OpenRouter, Together, Groq, or a **local/internal model** (Ollama, llama.cpp). The report retitles to "Brand Visibility on OpenAI", etc. Claude stays the default and the hero. *(Still zero-dependency — it's `fetch` either way.)*
 - **Run in other agents** — the Cowork server is a standard stdio MCP server, so **OpenCode, Codex CLI, Cursor, Cline, and Windsurf** can call the same tools today. Point their MCP config at `node /path/to/jusBrandMax/packages/cowork/dist/main.js`.
+
+### Category report packs (trademark-free)
+
+Ready-made, buyer-intent prompt sets for the verticals where LLM answers most directly steer spend. **No third-party trademarks are baked into any pack or report** — you supply your brand and competitors at runtime, and they stay on your machine.
+
+```bash
+jusbrandmax packs                       # list packs
+jusbrandmax init --category ecommerce   # scaffold an e-commerce config
+```
+
+`ecommerce` · `software` · `hardware` · `travel` · `hospitality` · `finance` · `healthcare` · `professional-services`
+
+**E-commerce is the first battleground** — buyers increasingly delegate the purchase decision to the model. See the [special report on why it matters →](./THESIS.md#special-report-e-commerce-brand-visibility).
 
 ---
 

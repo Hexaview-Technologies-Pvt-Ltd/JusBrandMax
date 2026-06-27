@@ -8,6 +8,8 @@ import {
   runReport,
   openHistory,
   createClaudeProvider,
+  listPacks,
+  getPack,
   type ClaudeProvider,
   type BrandReport,
   type LeaderboardEntry,
@@ -91,4 +93,12 @@ export function listCompetitorsTool(
   const latest = store.latest(args.brand);
   store.close();
   return { brand: args.brand, leaderboard: latest?.leaderboard ?? [] };
+}
+
+export function listPacksTool(args: { category?: string } = {}): unknown {
+  if (args.category) {
+    const pack = getPack(args.category);
+    return pack ?? { error: `Unknown category '${args.category}'.`, available: listPacks().map((p) => p.id) };
+  }
+  return { packs: listPacks() };
 }

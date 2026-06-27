@@ -1,12 +1,13 @@
 {
   "brand": "Acme CRM",
   "aliases": ["Acme"],
-  "competitors": ["Salesforce", "HubSpot"],
+  "competitors": ["Globex", "Initech"],
   "prompts": [
     "What's the best CRM for a small startup?",
     "Which CRM has the best automation?",
     "Affordable CRM recommendations?"
   ],
+  "provider": "anthropic",
   "model": "claude-opus-4-8",
   "samples": 2
 }
