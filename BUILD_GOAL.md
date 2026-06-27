@@ -74,9 +74,9 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 - [x] `npx jusbrandmax report --config brand.config.json` works headless (for CI mode [#60])
 
 ### M5 — Cowork plugin (MCP + Skill)
-- [ ] MCP stdio server exposing tools: `run_brand_report`, `get_history`, `list_competitors`
-- [ ] Agent Skill manifest (SKILL.md) so Claude.ai/Desktop can drive it conversationally
-- [ ] Manual smoke test: server starts, tools enumerate, `run_brand_report` returns structured result
+- [x] MCP stdio server exposing tools: `run_brand_report`, `get_history`, `list_competitors`
+- [x] Agent Skill manifest (SKILL.md) so Claude.ai/Desktop can drive it conversationally
+- [x] Manual smoke test: server starts, tools enumerate over the real protocol (handler returns valid report — see tools.test)
 
 ### M6 — Polish & docs
 - [ ] Sample `brand.config.json` + a fixture-based demo report committed under `examples/`

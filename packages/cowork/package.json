@@ -6,12 +6,20 @@
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "bin": {
+    "jusbrandmax-mcp": "./dist/main.js"
+  },
+  "files": [
+    "dist",
+    "skill"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
-    "@jusbrandmax/engine": "workspace:*"
+    "@jusbrandmax/engine": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
   }
 }
