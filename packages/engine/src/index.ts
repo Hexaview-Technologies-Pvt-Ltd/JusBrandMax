@@ -11,3 +11,6 @@ export const VERSION = "0.1.0";
 
 export * from "./config.js";
 export * from "./provider.js";
+export * from "./mentions.js";
+export * from "./scorers.js";
+export * from "./judge.js";

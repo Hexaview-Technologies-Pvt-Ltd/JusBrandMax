@@ -51,13 +51,13 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 - [x] Transcript capture: store raw prompt + response(s) per run (`AskResult`)
 
 ### M2 — Engine: scorers (each = pure function + unit test + formula comment)
-- [ ] Mention detection (brand + aliases, case/space tolerant) — feeds everything
-- [ ] **Presence** — AI Visibility Score (% of prompts with a mention) [matrix #2]
-- [ ] **Share of Voice** — your mentions vs competitors over same prompts [#3]
-- [ ] **Prominence** — first-mention rate + list position [#4]
-- [ ] **Sentiment & Positioning** — Claude-graded tone/framing per mention [#7]
-- [ ] **Accuracy** — hallucination/false-claim flag vs Brand Knowledge Pack [#9]
-- [ ] Competitor leaderboard [#15] + gap analysis (prompts rivals win, you don't) [#16]
+- [x] Mention detection (brand + aliases, case/space tolerant) — feeds everything
+- [x] **Presence** — AI Visibility Score (% of prompts with a mention) [matrix #2]
+- [x] **Share of Voice** — your mentions vs competitors over same prompts [#3]
+- [x] **Prominence** — first-mention rate + list position [#4]
+- [x] **Sentiment & Positioning** — Claude-graded tone/framing per mention [#7]
+- [x] **Accuracy** — hallucination/false-claim flag vs Brand Knowledge Pack [#9]
+- [x] Competitor leaderboard [#15] + gap analysis (prompts rivals win, you don't) [#16]
 
 ### M3 — Engine: history & report
 - [ ] SQLite history store: persist each run (scores + transcripts), query previous run
