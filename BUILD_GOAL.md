@@ -46,9 +46,9 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 - [x] vitest wired up; `pnpm -r test` runs (engine has a passing test)
 
 ### M1 — Engine: config & Claude provider
-- [ ] `BrandConfig` type + loader (brand name, aliases, competitors[], prompts[], optional persona/language)
-- [ ] `claudeProvider.ask(prompt, {model, n})` — calls Claude, supports repeated sampling (n runs)
-- [ ] Transcript capture: store raw prompt + response(s) per run
+- [x] `BrandConfig` type + loader (brand name, aliases, competitors[], prompts[], optional persona/language)
+- [x] `claudeProvider.ask(prompt, {model, n})` — calls Claude, supports repeated sampling (n runs)
+- [x] Transcript capture: store raw prompt + response(s) per run (`AskResult`)
 
 ### M2 — Engine: scorers (each = pure function + unit test + formula comment)
 - [ ] Mention detection (brand + aliases, case/space tolerant) — feeds everything
