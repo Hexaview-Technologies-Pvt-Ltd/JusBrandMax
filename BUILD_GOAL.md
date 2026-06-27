@@ -29,7 +29,9 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 - `packages/engine` — core library: Claude provider (official Anthropic SDK), prompt runner, scorers, storage, report generator.
 - `packages/cli` — Claude Code plugin: `plugin.json`, slash commands/skills, hooks; depends on `engine`.
 - `packages/cowork` — MCP server (stdio) + Agent Skill manifest; depends on `engine`.
-- Storage: local **SQLite** (`better-sqlite3`) for run history; config + reports as files on disk.
+- Storage: local **SQLite** for run history; config + reports as files on disk.
+  (Refinement: using Node's built-in `node:sqlite` instead of the native `better-sqlite3`
+  add-on — genuinely SQLite, zero native-build dependency, keeps self-hosting trivial.)
 - Tests: **vitest**. Scorers must be unit-tested with fixture transcripts (no live API in unit tests).
 - No web dashboard in v0.1.
 
@@ -60,9 +62,9 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 - [x] Competitor leaderboard [#15] + gap analysis (prompts rivals win, you don't) [#16]
 
 ### M3 — Engine: history & report
-- [ ] SQLite history store: persist each run (scores + transcripts), query previous run
-- [ ] Over-time deltas vs last run [#50]
-- [ ] Report generator → **Brand Visibility on Claude** report (Markdown + HTML), all 6 dimensions, white-label [#49]
+- [x] SQLite history store: persist each run (scores + transcripts), query previous run
+- [x] Over-time deltas vs last run [#50]
+- [x] Report generator → **Brand Visibility on Claude** report (Markdown + HTML), all 6 dimensions, white-label [#49]
 
 ### M4 — CLI plugin (Claude Code)
 - [ ] Valid `plugin.json` + marketplace-installable layout

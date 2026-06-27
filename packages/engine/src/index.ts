@@ -14,3 +14,5 @@ export * from "./provider.js";
 export * from "./mentions.js";
 export * from "./scorers.js";
 export * from "./judge.js";
+export * from "./report.js";
+export * from "./history.js";
