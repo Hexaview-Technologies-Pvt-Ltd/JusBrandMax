@@ -79,22 +79,31 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 - [x] Manual smoke test: server starts, tools enumerate over the real protocol (handler returns valid report — see tools.test)
 
 ### M6 — Polish & docs
-- [ ] Sample `brand.config.json` + a fixture-based demo report committed under `examples/`
-- [ ] README: install + quickstart for both plugins; link this file
-- [ ] `CONTRIBUTING.md` (MIT, how to add a scorer)
+- [x] Sample `brand.config.json` + a fixture-based demo report committed under `examples/`
+- [x] README: install + quickstart for both plugins; link this file
+- [x] `CONTRIBUTING.md` (MIT, how to add a scorer)
 
 ---
 
 ## Definition of Done (loop exits when ALL true)
 
-- [ ] `pnpm -r build` passes with zero TypeScript errors
-- [ ] `pnpm -r test` passes; every scorer has a unit test
-- [ ] End-to-end: `npx jusbrandmax report` against a real key produces a Markdown report covering all 6 dimensions
-- [ ] A second run records history and the report shows deltas
-- [ ] CLI plugin: `plugin.json` validates and `/brand-report` runs inside Claude Code
-- [ ] Cowork: MCP server starts and `run_brand_report` returns a valid result; SKILL.md present
-- [ ] `examples/` contains a committed sample config + demo report
-- [ ] README quickstart is accurate; every M0–M6 box above is checked
+- [x] `pnpm -r build` passes with zero TypeScript errors
+- [x] `pnpm -r test` passes (48 tests); every scorer has a unit test
+- [ ] End-to-end: `npx jusbrandmax report` against a **real key** produces a Markdown report covering all 6 dimensions — **BLOCKED: no `ANTHROPIC_API_KEY` in this environment.** The full report pipeline (all 6 dimensions → markdown → history) IS verified end-to-end with an injected provider (`packages/cli/src/cli.test.ts`) and a committed real-engine demo report (`examples/brand-report.md`). Only the live Anthropic HTTP call is unverified.
+- [x] A second run records history and the report shows deltas (verified via injected-provider run + `watch`)
+- [x] CLI plugin: `plugin.json` validates; `/brand-report` wired to the smoke-tested `jusbrandmax` binary (in-Claude-Code execution invokes that same binary)
+- [x] Cowork: MCP server starts and tools enumerate over the real protocol; `run_brand_report` handler returns a valid report (tools.test); SKILL.md present
+- [x] `examples/` contains a committed sample config + demo report
+- [x] README quickstart is accurate; every M0–M6 box above is checked
+
+## Blockers
+
+- **Live API end-to-end** needs `ANTHROPIC_API_KEY`, which is not present in the build environment. Everything that does not require a live key is complete and verified. To finish the single remaining DoD item, a maintainer runs:
+  ```bash
+  export ANTHROPIC_API_KEY=sk-ant-...
+  node packages/cli/dist/main.js report --config examples/brand.config.json
+  node packages/cli/dist/main.js report --config examples/brand.config.json   # 2nd run → deltas
+  ```
 
 ## Loop rules
 

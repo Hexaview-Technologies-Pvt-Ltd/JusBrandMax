@@ -209,6 +209,28 @@ Everything below is **MIT-licensed and free**.
 
 ---
 
+## Quickstart
+
+Requires Node ≥ 20 and pnpm. jusBrandMax is **bring-your-own-key** — set `ANTHROPIC_API_KEY` (it never leaves your machine).
+
+```bash
+pnpm install && pnpm -r build
+
+# CLI: scaffold a config, then run a report
+export ANTHROPIC_API_KEY=sk-ant-...
+node packages/cli/dist/main.js init            # writes brand.config.json (edit it)
+node packages/cli/dist/main.js report          # writes brand-report.md + records history
+node packages/cli/dist/main.js watch           # shows the trend vs the previous run
+```
+
+See a sample config and a generated report in [`examples/`](./examples/) — e.g. [`examples/brand-report.md`](./examples/brand-report.md).
+
+**CLI plugin (Claude Code):** the plugin lives in [`packages/cli/plugin/`](./packages/cli/plugin/) — slash commands `/brand-init`, `/brand-report`, `/brand-watch`.
+
+**Cowork plugin (Claude.ai / Claude Desktop):** an MCP server + Agent Skill. Add it as a custom connector pointing at the `jusbrandmax-mcp` stdio server (`node packages/cowork/dist/main.js`); the bundled [`SKILL.md`](./packages/cowork/skill/SKILL.md) lets a marketer just ask *"How visible is my brand on Claude?"*. Tools: `run_brand_report`, `get_history`, `list_competitors`.
+
+Building it (or curious about the plan/status)? See [`BUILD_GOAL.md`](./BUILD_GOAL.md).
+
 ## License
 
 **MIT** — see [LICENSE](./LICENSE). Everything in jusBrandMax, including both plugins and the core engine, is and will remain MIT-licensed.
