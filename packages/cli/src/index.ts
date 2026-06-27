@@ -1,9 +1,8 @@
 /**
- * jusBrandMax CLI — Claude Code plugin entry point.
+ * jusBrandMax CLI package — programmatic surface.
  *
- * Slash commands (`/brand-init`, `/brand-report`, `/brand-watch`) and the
- * headless `jusbrandmax` binary are wired up in M4. For now this re-exports the
- * engine version so the package has a real, buildable surface.
+ * The runnable binary lives in `main.ts` (wired via the `bin` field). This entry
+ * re-exports the engine version and the CLI runner for embedding/testing.
  */
-
 export { VERSION } from "@jusbrandmax/engine";
+export { runCli, parseArgs, type CliDeps } from "./cli.js";

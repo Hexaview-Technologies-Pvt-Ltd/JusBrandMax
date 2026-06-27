@@ -67,11 +67,11 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 - [x] Report generator → **Brand Visibility on Claude** report (Markdown + HTML), all 6 dimensions, white-label [#49]
 
 ### M4 — CLI plugin (Claude Code)
-- [ ] Valid `plugin.json` + marketplace-installable layout
-- [ ] `/brand-init` — interactive/flagged setup writing `brand.config.json`
-- [ ] `/brand-report` — runs full report, writes file, prints summary
-- [ ] `/brand-watch` — shows trend vs history
-- [ ] `npx jusbrandmax report --config brand.config.json` works headless (for CI mode [#60])
+- [x] Valid `plugin.json` + marketplace-installable layout (`packages/cli/plugin/`)
+- [x] `/brand-init` — interactive/flagged setup writing `brand.config.json`
+- [x] `/brand-report` — runs full report, writes file, prints summary
+- [x] `/brand-watch` — shows trend vs history
+- [x] `npx jusbrandmax report --config brand.config.json` works headless (for CI mode [#60])
 
 ### M5 — Cowork plugin (MCP + Skill)
 - [ ] MCP stdio server exposing tools: `run_brand_report`, `get_history`, `list_competitors`

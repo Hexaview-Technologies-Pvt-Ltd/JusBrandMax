@@ -6,7 +6,10 @@
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "bin": {
+    "jusbrandmax": "./dist/main.js"
+  },
+  "files": ["dist", "plugin"],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run --passWithNoTests"

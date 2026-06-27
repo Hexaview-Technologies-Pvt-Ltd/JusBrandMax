@@ -1,0 +1,9 @@
+{
+  "name": "jusbrandmax",
+  "version": "0.1.0",
+  "description": "Brand Visibility on Claude — measure, diagnose, and fix how your brand shows up in Claude's answers. MIT, open source.",
+  "author": "Kashinath KS (KashiKS)",
+  "license": "MIT",
+  "homepage": "https://github.com/KashiKS/jusBrandMax",
+  "commands": "./commands"
+}
