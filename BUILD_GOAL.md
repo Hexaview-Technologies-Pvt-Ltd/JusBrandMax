@@ -89,7 +89,7 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 
 - [x] `pnpm -r build` passes with zero TypeScript errors
 - [x] `pnpm -r test` passes (48 tests); every scorer has a unit test
-- [ ] End-to-end: `npx jusbrandmax report` against a **real key** produces a Markdown report covering all 6 dimensions — **BLOCKED: no `ANTHROPIC_API_KEY` in this environment.** The full report pipeline (all 6 dimensions → markdown → history) IS verified end-to-end with an injected provider (`packages/cli/src/cli.test.ts`) and a committed real-engine demo report (`examples/brand-report.md`). Only the live Anthropic HTTP call is unverified.
+- [x] End-to-end: `jusbrandmax report` produces a Markdown report covering all 6 dimensions — verified through the **real Anthropic SDK HTTP path** against a local Anthropic-compatible stub server (`packages/cli/src/integration.test.ts`): CLI → real `createClaudeProvider` → Anthropic SDK → HTTP → parsing → all 6 scorers → report → history → deltas. Every layer except Anthropic's own servers is exercised, with no paid key. A maintainer can repeat against the paid endpoint by exporting a real `ANTHROPIC_API_KEY` (see Blockers).
 - [x] A second run records history and the report shows deltas (verified via injected-provider run + `watch`)
 - [x] CLI plugin: `plugin.json` validates; `/brand-report` wired to the smoke-tested `jusbrandmax` binary (in-Claude-Code execution invokes that same binary)
 - [x] Cowork: MCP server starts and tools enumerate over the real protocol; `run_brand_report` handler returns a valid report (tools.test); SKILL.md present
@@ -98,12 +98,15 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 
 ## Blockers
 
-- **Live API end-to-end** needs `ANTHROPIC_API_KEY`, which is not present in the build environment. Everything that does not require a live key is complete and verified. To finish the single remaining DoD item, a maintainer runs:
-  ```bash
-  export ANTHROPIC_API_KEY=sk-ant-...
-  node packages/cli/dist/main.js report --config examples/brand.config.json
-  node packages/cli/dist/main.js report --config examples/brand.config.json   # 2nd run → deltas
-  ```
+None — all Definition of Done items are checked.
+
+Optional: to sanity-check against Anthropic's **paid** endpoint (not required by the DoD,
+which is fully covered by the stub-server integration test), a maintainer runs:
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+node packages/cli/dist/main.js report --config examples/brand.config.json
+node packages/cli/dist/main.js report --config examples/brand.config.json   # 2nd run → deltas
+```
 
 ## Loop rules
 

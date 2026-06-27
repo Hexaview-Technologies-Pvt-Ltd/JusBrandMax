@@ -51,6 +51,8 @@ export interface ClaudeProvider {
 
 export interface CreateProviderOptions {
   apiKey?: string;
+  /** Override the API base URL (also read from ANTHROPIC_BASE_URL). */
+  baseURL?: string;
   /** Inject a fake client in tests; falls back to a real Anthropic client. */
   client?: MessagesClient;
 }
@@ -66,10 +68,12 @@ export function extractText(res: MessageResponse): string {
 }
 
 export function createClaudeProvider(options: CreateProviderOptions = {}): ClaudeProvider {
+  const baseURL = options.baseURL ?? process.env["ANTHROPIC_BASE_URL"];
   const client: MessagesClient =
     options.client ??
     (new Anthropic({
       apiKey: options.apiKey ?? process.env["ANTHROPIC_API_KEY"],
+      ...(baseURL ? { baseURL } : {}),
     }) as unknown as MessagesClient);
 
   return {

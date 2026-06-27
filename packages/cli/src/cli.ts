@@ -142,8 +142,11 @@ export async function runCli(argv: string[], partial: Partial<CliDeps> = {}): Pr
         return 1;
       }
       const config = loadBrandConfig(configPath);
+      const baseURL = deps.env["ANTHROPIC_BASE_URL"];
       const makeProvider =
-        partial.makeProvider ?? ((k?: string) => createClaudeProvider({ ...(k ? { apiKey: k } : {}) }));
+        partial.makeProvider ??
+        ((k?: string) =>
+          createClaudeProvider({ ...(k ? { apiKey: k } : {}), ...(baseURL ? { baseURL } : {}) }));
       const provider = makeProvider(deps.env["ANTHROPIC_API_KEY"]);
 
       const report = await runReport(provider, config, deps.now ? { now: deps.now() } : {});
