@@ -1,0 +1,22 @@
+{
+  "name": "jusbrandmax",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The open-source brand command center for Claude — measure, diagnose, and fix your brand's visibility on Claude.",
+  "license": "MIT",
+  "author": "Kashinath KS (KashiKS)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "vitest run",
+    "typecheck": "pnpm -r exec tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

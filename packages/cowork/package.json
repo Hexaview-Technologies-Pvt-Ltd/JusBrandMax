@@ -1,0 +1,17 @@
+{
+  "name": "@jusbrandmax/cowork",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "jusBrandMax Cowork plugin — MCP server + Agent Skill for Brand Visibility on Claude in Claude.ai / Claude Desktop.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@jusbrandmax/engine": "workspace:*"
+  }
+}

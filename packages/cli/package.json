@@ -1,0 +1,17 @@
+{
+  "name": "@jusbrandmax/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "jusBrandMax CLI + Claude Code plugin — run Brand Visibility on Claude reports from the terminal.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@jusbrandmax/engine": "workspace:*"
+  }
+}
