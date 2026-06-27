@@ -1,6 +1,10 @@
 # Brand Visibility on Claude — Acme CRM
 
-**Overall: 55.8/100** · model `claude-opus-4-8` · 5 prompts · 10 samples · standard mode · 2026-06-27T00:00:00Z
+**Overall: 55.8/100** · model `claude-opus-4-8` · 5 prompts · 10 samples · standard mode · confidence: medium · 2026-06-27T00:00:00Z
+
+## Executive summary
+
+Acme CRM scores 55.8/100 for brand visibility on Claude (model claude-opus-4-8), measured across 5 prompts and 10 samples. It is mentioned in 40% of answers, with a 21% share of voice against its competitors. Visibility is 67% on direct "best <category>" questions but 0% on the problem-led questions buyers ask earlier in the journey. It is strongest on prominence (75%) and weakest on share of voice (21%). The model makes 0 contradicted and 1 unsupported claim(s) about the brand. Top priority: Win indirect-intent questions.
 
 ## Dimensions
 
@@ -20,6 +24,12 @@ Where category demand forms vs. where you show up.
 |---|---|---|
 | Direct ("best <category>") | 3 | 67% |
 | Indirect (problem / jobs-to-be-done) | 2 | 0% |
+
+## Recommended actions
+
+1. **Win indirect-intent questions** _(impact: high, effort: medium)_
+2. **Close the gap on "Which CRM has the best automation?"** _(impact: high, effort: medium)_
+3. **Close the gap on "How do I stop losing track of sales leads?"** _(impact: high, effort: medium)_
 
 ## Competitor leaderboard
 

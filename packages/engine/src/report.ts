@@ -10,6 +10,8 @@ import type { AskResult, ClaudeProvider } from "./provider.js";
 import { modeSamples, type BrandConfig, type ReportMode } from "./config.js";
 import { detectMention } from "./mentions.js";
 import { providerEngineLabel } from "./provider-factory.js";
+import { extractEvidence, type EvidenceQuote } from "./evidence.js";
+import { buildRecommendations, summarize, interpretDimensions, type Recommendation } from "./insights.js";
 import {
   scoreVisibility,
   scoreShareOfVoice,
@@ -55,6 +57,14 @@ export interface BrandReport {
     direct: { promptCount: number; visibility: number };
     indirect: { promptCount: number; visibility: number };
   };
+  /** Confidence in the numbers, from sample size. */
+  confidence: { samplesPerPrompt: number; level: "low" | "medium" | "high" };
+  /** Verbatim quotes behind the scores. */
+  evidence: EvidenceQuote[];
+  /** Ordered, data-backed action list. */
+  recommendations: Recommendation[];
+  /** One-paragraph executive summary (data-derived). */
+  summary: string;
   /** Blended 0–100 headline score. */
   overall: number;
 }
@@ -94,6 +104,13 @@ export function computeReport(input: ComputeReportInput): BrandReport {
   };
   const intentBreakdown = { direct: band(directRuns), indirect: band(indirectRuns) };
 
+  const evidence = extractEvidence(runs, brandNames, competitors);
+  const samplesPerPrompt = presence.promptCount ? Math.round(presence.sampleCount / presence.promptCount) : 0;
+  const confidence = {
+    samplesPerPrompt,
+    level: (samplesPerPrompt >= 4 ? "high" : samplesPerPrompt >= 2 ? "medium" : "low") as "low" | "medium" | "high",
+  };
+
   // Overall = weighted blend of the six dimensions, scaled to 0–100.
   // Sentiment net (−1..1) is normalized to 0..1 first.
   const sentimentNorm = (sentiment.net + 1) / 2;
@@ -105,7 +122,7 @@ export function computeReport(input: ComputeReportInput): BrandReport {
       0.15 * sentimentNorm +
       0.2 * accuracy.accuracy);
 
-  return {
+  const report: BrandReport = {
     brand,
     engine: input.engine ?? "Claude",
     model,
@@ -116,8 +133,16 @@ export function computeReport(input: ComputeReportInput): BrandReport {
     leaderboard,
     gaps,
     intentBreakdown,
+    confidence,
+    evidence,
+    recommendations: [],
+    summary: "",
     overall: Math.round(overall * 10) / 10,
   };
+  // Derive narrative + actions from the finished numbers.
+  report.recommendations = buildRecommendations(report);
+  report.summary = summarize(report);
+  return report;
 }
 
 export interface RunReportOptions {
@@ -188,8 +213,16 @@ export function renderMarkdown(r: BrandReport, opts: RenderOptions = {}): string
   const lines: string[] = [
     `# Brand Visibility on ${r.engine} — ${r.brand}`,
     "",
-    `**Overall: ${r.overall}/100** · model \`${r.model}\` · ${r.promptCount} prompts · ${r.sampleCount} samples · ${mode} mode · ${r.generatedAt}`,
+    `**Overall: ${r.overall}/100** · model \`${r.model}\` · ${r.promptCount} prompts · ${r.sampleCount} samples · ${mode} mode · confidence: ${r.confidence.level} · ${r.generatedAt}`,
     "",
+  ];
+
+  // Executive summary (standard + detailed) — fully data-derived narrative.
+  if (mode !== "quick") {
+    lines.push("## Executive summary", "", r.summary, "");
+  }
+
+  lines.push(
     "## Dimensions",
     "",
     "| Dimension | Score |",
@@ -200,9 +233,14 @@ export function renderMarkdown(r: BrandReport, opts: RenderOptions = {}): string
     `| Sentiment (net) | ${d.sentiment.net.toFixed(2)} |`,
     `| Accuracy | ${pct(d.accuracy.accuracy)} (${d.accuracy.contradicted} contradicted, ${d.accuracy.unsupported} unsupported) |`,
     "",
-  ];
+  );
 
-  // Intent breakdown (standard + detailed): direct vs indirect-intent visibility.
+  // Detailed: per-dimension interpretation.
+  if (mode === "detailed") {
+    lines.push("### What this means", "", ...interpretDimensions(r).map((s) => `- ${s}`), "");
+  }
+
+  // Intent breakdown (standard + detailed).
   if (mode !== "quick" && r.intentBreakdown.indirect.promptCount > 0) {
     lines.push(
       "## Intent breakdown",
@@ -215,6 +253,17 @@ export function renderMarkdown(r: BrandReport, opts: RenderOptions = {}): string
       `| Indirect (problem / jobs-to-be-done) | ${r.intentBreakdown.indirect.promptCount} | ${pct(r.intentBreakdown.indirect.visibility)} |`,
       "",
     );
+  }
+
+  // Action Center (standard = top 3, detailed = all with rationale).
+  if (mode !== "quick" && r.recommendations.length > 0) {
+    const recs = mode === "detailed" ? r.recommendations : r.recommendations.slice(0, 3);
+    lines.push("## Recommended actions", "");
+    recs.forEach((rec, i) => {
+      lines.push(`${i + 1}. **${rec.title}** _(impact: ${rec.impact}, effort: ${rec.effort})_`);
+      if (mode === "detailed") lines.push(`   ${rec.rationale}`);
+    });
+    lines.push("");
   }
 
   if (mode !== "quick") {
@@ -237,8 +286,17 @@ export function renderMarkdown(r: BrandReport, opts: RenderOptions = {}): string
     );
   }
 
-  // Detailed: per-prompt visibility drill-down.
+  // Detailed: evidence quotes + per-prompt drill-down.
   if (mode === "detailed") {
+    lines.push("## Evidence (what the model actually said)", "");
+    if (r.evidence.length === 0) {
+      lines.push("_No quotes captured._", "");
+    } else {
+      for (const e of r.evidence) {
+        lines.push(`- **${e.prompt}**`, `  > ${e.quote}${e.brand ? "" : "  _(brand absent — this is what appeared instead)_"}`);
+      }
+      lines.push("");
+    }
     lines.push(
       "## Per-prompt visibility",
       "",
@@ -255,28 +313,61 @@ export function renderMarkdown(r: BrandReport, opts: RenderOptions = {}): string
   return lines.join("\n");
 }
 
+const esc = (s: string): string =>
+  s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/** A complete, styled, standalone HTML report — shareable, zero-dependency. */
 export function renderHtml(r: BrandReport, opts: RenderOptions = {}): string {
   const d = r.dimensions;
-  const rows = [
+  const scoreColor = r.overall >= 70 ? "#1a7f37" : r.overall >= 40 ? "#9a6700" : "#cf222e";
+  const dimRows = [
     ["Presence (visibility)", pct(d.presence.visibility)],
     ["Share of Voice", pct(d.shareOfVoice.brandShare)],
     ["Prominence (first-mention rate)", pct(d.prominence.firstMentionRate)],
     ["Sentiment (net)", d.sentiment.net.toFixed(2)],
-    ["Accuracy", pct(d.accuracy.accuracy)],
+    ["Accuracy", `${pct(d.accuracy.accuracy)} (${d.accuracy.contradicted} contradicted, ${d.accuracy.unsupported} unsupported)`],
   ]
-    .map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`)
+    .map(([k, v]) => `<tr><td>${esc(k!)}</td><td>${esc(v!)}</td></tr>`)
+    .join("");
+  const boardRows = r.leaderboard
+    .map(
+      (e, i) =>
+        `<tr><td>${i + 1}</td><td>${e.isBrand ? `<strong>${esc(e.name)}</strong>` : esc(e.name)}</td><td>${pct(e.share)}</td></tr>`,
+    )
+    .join("");
+  const recItems = r.recommendations
+    .map((rec) => `<li><strong>${esc(rec.title)}</strong> <em>(impact ${rec.impact}, effort ${rec.effort})</em><br>${esc(rec.rationale)}</li>`)
+    .join("");
+  const evidenceItems = r.evidence
+    .map((e) => `<li><strong>${esc(e.prompt)}</strong><blockquote>${esc(e.quote)}${e.brand ? "" : " <em>(brand absent)</em>"}</blockquote></li>`)
     .join("");
   const footer = opts.footer
-    ? `<footer>Generated by jusBrandMax — MIT, open-source brand visibility for Claude.</footer>`
+    ? `<footer style="margin-top:2rem;color:#666;font-size:.85rem">Generated by jusBrandMax — MIT, open-source brand visibility for Claude.</footer>`
     : "";
-  return [
-    "<!doctype html>",
-    `<html><head><meta charset="utf-8"><title>Brand Visibility on Claude — ${r.brand}</title></head>`,
-    "<body>",
-    `<h1>Brand Visibility on Claude — ${r.brand}</h1>`,
-    `<p><strong>Overall: ${r.overall}/100</strong> · model <code>${r.model}</code> · ${r.promptCount} prompts · ${r.sampleCount} samples · ${r.generatedAt}</p>`,
-    `<table border="1" cellpadding="6"><thead><tr><th>Dimension</th><th>Score</th></tr></thead><tbody>${rows}</tbody></table>`,
-    footer,
-    "</body></html>",
-  ].join("\n");
+
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brand Visibility on ${esc(r.engine)} — ${esc(r.brand)}</title>
+<style>
+ body{font:16px/1.6 -apple-system,Segoe UI,Roboto,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;color:#1c1c1c}
+ h1{font-size:1.6rem;margin-bottom:.25rem} h2{margin-top:2rem;border-bottom:1px solid #eee;padding-bottom:.25rem}
+ .score{font-size:2.6rem;font-weight:700;color:${scoreColor}} .meta{color:#666;font-size:.9rem}
+ table{border-collapse:collapse;width:100%;margin:.5rem 0} td,th{border:1px solid #e3e3e3;padding:.5rem .6rem;text-align:left}
+ blockquote{margin:.3rem 0 .8rem;padding:.2rem .8rem;border-left:3px solid #ddd;color:#444}
+ ul{padding-left:1.2rem}
+</style></head><body>
+<h1>Brand Visibility on ${esc(r.engine)} — ${esc(r.brand)}</h1>
+<p class="meta">model <code>${esc(r.model)}</code> · ${r.promptCount} prompts · ${r.sampleCount} samples · confidence: ${r.confidence.level} · ${esc(r.generatedAt)}</p>
+<p class="score">${r.overall}<span style="font-size:1rem;color:#666">/100</span></p>
+<h2>Executive summary</h2><p>${esc(r.summary)}</p>
+<h2>Dimensions</h2><table><thead><tr><th>Dimension</th><th>Score</th></tr></thead><tbody>${dimRows}</tbody></table>
+<h2>Intent breakdown</h2><table><thead><tr><th>Intent</th><th>Prompts</th><th>Visibility</th></tr></thead><tbody>
+<tr><td>Direct ("best &lt;category&gt;")</td><td>${r.intentBreakdown.direct.promptCount}</td><td>${pct(r.intentBreakdown.direct.visibility)}</td></tr>
+<tr><td>Indirect (problem-led)</td><td>${r.intentBreakdown.indirect.promptCount}</td><td>${pct(r.intentBreakdown.indirect.visibility)}</td></tr>
+</tbody></table>
+<h2>Recommended actions</h2><ol>${recItems || "<li>No actions — strong across the board.</li>"}</ol>
+<h2>Competitor leaderboard</h2><table><thead><tr><th>#</th><th>Brand</th><th>Share</th></tr></thead><tbody>${boardRows}</tbody></table>
+<h2>Evidence</h2><ul>${evidenceItems || "<li>No quotes captured.</li>"}</ul>
+${footer}
+</body></html>`;
 }

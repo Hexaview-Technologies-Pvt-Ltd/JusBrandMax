@@ -70,6 +70,45 @@ describe("runCli", () => {
     expect(log.text()).toMatch(/init/);
   });
 
+  it("onboards from --brand, writes a badge, drafts a fix, and diffs two runs", async () => {
+    const cwd = mkdtempSync(join(tmpdir(), "jbm-"));
+    const rich = (): ClaudeProvider => ({
+      ask: async (prompt, opts): Promise<AskResult> => {
+        const mk = (t: string): AskResult => ({
+          prompt,
+          model: opts.model,
+          responses: Array.from({ length: opts.samples ?? 1 }, () => t),
+        });
+        const sys = opts.system ?? "";
+        if (sys.includes("set up a brand-visibility audit"))
+          return mk('{"prompts":["best crm?"],"indirectPrompts":["how do I track leads?"],"competitors":["Globex","Initech"]}');
+        if (sys.includes("brand content strategist")) return mk("# Lead tracking guide\nAcme helps...");
+        if (sys.includes("portrays")) return mk('{"label":"positive","rationale":"good"}');
+        if (sys.includes("fact-check")) return mk('{"claims":[]}');
+        if (prompt.includes("track leads")) return mk("Globex and Initech can help with that."); // indirect → brand absent
+        return mk("Acme is the best CRM, ahead of Globex.");
+      },
+    });
+    const base = { cwd, stdout: () => {}, stderr: () => {}, makeProvider: rich, env: { ANTHROPIC_API_KEY: "x" } };
+
+    await runCli(["init", "--brand", "Acme", "--about", "a CRM"], base);
+    const cfg = JSON.parse(readFileSync(join(cwd, "brand.config.json"), "utf8")) as { brand: string; prompts: string[] };
+    expect(cfg.brand).toBe("Acme");
+    expect(cfg.prompts).toContain("best crm?");
+
+    await runCli(["report", "--badge", "b.svg"], { ...base, now: () => "t1" });
+    expect(readFileSync(join(cwd, "b.svg"), "utf8")).toContain("<svg");
+
+    await runCli(["report"], { ...base, now: () => "t2" }); // second run for diff
+
+    await runCli(["fix"], base);
+    expect(readFileSync(join(cwd, "brand-fix.md"), "utf8")).toContain("Lead tracking guide");
+
+    const diffOut: string[] = [];
+    await runCli(["diff"], { cwd, stdout: (s) => diffOut.push(s), stderr: (s) => diffOut.push(s), env: {} });
+    expect(diffOut.join("\n")).toContain("Cross-engine diff");
+  });
+
   it("report runs end-to-end with an injected provider and records history", async () => {
     const cwd = mkdtempSync(join(tmpdir(), "jbm-"));
     const log = collector();

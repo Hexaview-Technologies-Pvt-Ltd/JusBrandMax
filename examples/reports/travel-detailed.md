@@ -4,7 +4,7 @@
 
 ## Executive summary
 
-Northwind scores 56.5/100 for brand visibility on Claude (model claude-opus-4-8), measured across 10 prompts and 20 samples. It is mentioned in 50% of answers, with a 29% share of voice against its competitors. Visibility is 67% on direct "best <category>" questions but 25% on the problem-led questions buyers ask earlier in the journey. It is strongest on accuracy (67%) and weakest on share of voice (29%). The model makes 0 contradicted and 1 unsupported claim(s) about the brand. Top priority: Close the gap on "Best budget running shoes for beginners?".
+Northwind scores 56.5/100 for brand visibility on Claude (model claude-opus-4-8), measured across 10 prompts and 20 samples. It is mentioned in 50% of answers, with a 29% share of voice against its competitors. Visibility is 67% on direct "best <category>" questions but 25% on the problem-led questions buyers ask earlier in the journey. It is strongest on accuracy (67%) and weakest on share of voice (29%). The model makes 0 contradicted and 1 unsupported claim(s) about the brand. Top priority: Close the gap on "Which loyalty program is best for frequent Tokyo travelers?".
 
 ## Dimensions
 
@@ -35,11 +35,11 @@ Where category demand forms vs. where you show up.
 
 ## Recommended actions
 
-1. **Close the gap on "Best budget running shoes for beginners?"** _(impact: high, effort: medium)_
+1. **Close the gap on "Which loyalty program is best for frequent Tokyo travelers?"** _(impact: high, effort: medium)_
    Competitors (Globex, Initech) appear here and you don't. Create content that directly answers this question.
-2. **Close the gap on "What's the best running shoes under running shoes?"** _(impact: high, effort: medium)_
+2. **Close the gap on "What's the best Tokyo service in Tokyo?"** _(impact: high, effort: medium)_
    Competitors (Globex, Initech) appear here and you don't. Create content that directly answers this question.
-3. **Close the gap on "Is it worth upgrading my running shoes?"** _(impact: high, effort: medium)_
+3. **Close the gap on "What's the best way to get around Tokyo?"** _(impact: high, effort: medium)_
    Competitors (Globex, Initech) appear here and you don't. Create content that directly answers this question.
 4. **Ground 1 unverifiable claim(s)** _(impact: medium, effort: low)_
    The model asserts facts it can't support. Add a Brand Knowledge Pack so the record is verifiable.
@@ -56,49 +56,49 @@ Where category demand forms vs. where you show up.
 
 ## Gaps (competitors win, you're absent)
 
-- **Best budget running shoes for beginners?** → Globex, Initech
-- **What's the best running shoes under running shoes?** → Globex, Initech
-- **Is it worth upgrading my running shoes?** → Globex, Initech
-- **How do I make my running shoes last longer?** → Globex, Initech
-- **What should I look for when buying a running shoes?** → Globex, Initech
+- **Which loyalty program is best for frequent Tokyo travelers?** → Globex, Initech
+- **What's the best Tokyo service in Tokyo?** → Globex, Initech
+- **What's the best way to get around Tokyo?** → Globex, Initech
+- **How do I avoid Tokyo?** → Globex, Initech
+- **What should I know before visiting Tokyo?** → Globex, Initech
 
 ## Evidence (what the model actually said)
 
-- **What is the best running shoes to buy right now?**
+- **What are the best places to stay in Tokyo?**
   > Northwind is a strong choice, alongside Globex.
-- **Which brand makes the most reliable running shoes?**
+- **Recommend a travel booking option for Tokyo trips.**
   > Northwind is a strong choice, alongside Globex.
-- **Best budget running shoes for beginners?**
+- **Which loyalty program is best for frequent Tokyo travelers?**
   > Globex and Initech are popular.  _(brand absent — this is what appeared instead)_
-- **What running shoes do experts recommend for running shoes?**
+- **Cheapest reliable way to travel to Tokyo?**
   > Northwind is a strong choice, alongside Globex.
-- **Most sustainable / ethical running shoes brands?**
+- **Best travel insurance for Tokyo?**
   > Northwind is a strong choice, alongside Globex.
-- **What's the best running shoes under running shoes?**
+- **What's the best Tokyo service in Tokyo?**
   > Globex and Initech are popular.  _(brand absent — this is what appeared instead)_
-- **How do I choose the right running shoes for running shoes?**
+- **How do I plan a Tokyo trip to Tokyo on a budget?**
   > Northwind can help; so can Globex.
-- **Is it worth upgrading my running shoes?**
+- **What's the best way to get around Tokyo?**
   > Consider Globex or Initech.  _(brand absent — this is what appeared instead)_
-- **How do I make my running shoes last longer?**
+- **How do I avoid Tokyo?**
   > Consider Globex or Initech.  _(brand absent — this is what appeared instead)_
-- **What should I look for when buying a running shoes?**
+- **What should I know before visiting Tokyo?**
   > Consider Globex or Initech.  _(brand absent — this is what appeared instead)_
 
 ## Per-prompt visibility
 
 | Prompt | Visibility |
 |---|---|
-| What is the best running shoes to buy right now? | 100% |
-| Which brand makes the most reliable running shoes? | 100% |
-| Best budget running shoes for beginners? | 0% |
-| What running shoes do experts recommend for running shoes? | 100% |
-| Most sustainable / ethical running shoes brands? | 100% |
-| What's the best running shoes under running shoes? | 0% |
-| How do I choose the right running shoes for running shoes? | 100% |
-| Is it worth upgrading my running shoes? | 0% |
-| How do I make my running shoes last longer? | 0% |
-| What should I look for when buying a running shoes? | 0% |
+| What are the best places to stay in Tokyo? | 100% |
+| Recommend a travel booking option for Tokyo trips. | 100% |
+| Which loyalty program is best for frequent Tokyo travelers? | 0% |
+| Cheapest reliable way to travel to Tokyo? | 100% |
+| Best travel insurance for Tokyo? | 100% |
+| What's the best Tokyo service in Tokyo? | 0% |
+| How do I plan a Tokyo trip to Tokyo on a budget? | 100% |
+| What's the best way to get around Tokyo? | 0% |
+| How do I avoid Tokyo? | 0% |
+| What should I know before visiting Tokyo? | 0% |
 
 ---
 _Generated by jusBrandMax — MIT, open-source brand visibility for Claude._

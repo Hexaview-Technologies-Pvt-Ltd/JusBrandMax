@@ -132,5 +132,8 @@ describe("intent breakdown & modes", () => {
 
     const det = renderMarkdown(base, { mode: "detailed" });
     expect(det).toContain("Per-prompt visibility");
+    expect(det).toContain("Executive summary");
+    expect(det).toContain("Recommended actions");
+    expect(det).toContain("Evidence (what the model actually said)");
   });
 });

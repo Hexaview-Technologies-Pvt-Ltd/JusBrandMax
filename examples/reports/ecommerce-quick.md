@@ -1,6 +1,6 @@
 # Brand Visibility on Claude — Northwind
 
-**Overall: 56.5/100** · model `claude-opus-4-8` · 10 prompts · 20 samples · quick mode · 2026-06-27T00:00:00Z
+**Overall: 56.5/100** · model `claude-opus-4-8` · 10 prompts · 20 samples · quick mode · confidence: medium · 2026-06-27T00:00:00Z
 
 ## Dimensions
 

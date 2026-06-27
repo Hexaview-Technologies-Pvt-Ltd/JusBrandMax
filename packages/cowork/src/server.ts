@@ -13,6 +13,7 @@ import {
   getHistoryTool,
   listCompetitorsTool,
   listPacksTool,
+  suggestSetupTool,
   defaultToolDeps,
   type ToolDeps,
   type RunBrandReportArgs,
@@ -62,6 +63,20 @@ export const TOOLS = [
       "List the trademark-free category report packs (ecommerce, travel, hospitality, software, hardware, …), or pass a category id to get its prompt set.",
     inputSchema: { type: "object", properties: { category: { type: "string" } } },
   },
+  {
+    name: "suggest_setup",
+    description:
+      "10-second onboarding: given a brand name (and what it does), propose the prompt universe (direct + indirect intent) and likely competitors to measure.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        brand: { type: "string" },
+        description: { type: "string" },
+        model: { type: "string" },
+      },
+      required: ["brand"],
+    },
+  },
 ] as const;
 
 interface JsonRpcRequest {
@@ -85,6 +100,17 @@ async function callTool(name: string, args: Record<string, unknown>, deps: ToolD
       return textResult(listCompetitorsTool({ brand: String(args["brand"] ?? "") }, deps));
     case "list_packs":
       return textResult(listPacksTool(args["category"] ? { category: String(args["category"]) } : {}));
+    case "suggest_setup":
+      return textResult(
+        await suggestSetupTool(
+          {
+            brand: String(args["brand"] ?? ""),
+            ...(args["description"] ? { description: String(args["description"]) } : {}),
+            ...(args["model"] ? { model: String(args["model"]) } : {}),
+          },
+          deps,
+        ),
+      );
     default:
       throw new Error(`Unknown tool: ${name}`);
   }

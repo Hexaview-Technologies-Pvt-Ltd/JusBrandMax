@@ -48,8 +48,9 @@ describe("MCP dispatch (zero-dep JSON-RPC)", () => {
       "list_competitors",
       "list_packs",
       "run_brand_report",
+      "suggest_setup",
     ]);
-    expect(TOOLS).toHaveLength(4);
+    expect(TOOLS).toHaveLength(5);
   });
 
   it("list_packs returns the category packs", async () => {

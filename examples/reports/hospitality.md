@@ -1,6 +1,10 @@
 # Brand Visibility on Claude — Northwind
 
-**Overall: 56.5/100** · model `claude-opus-4-8` · 10 prompts · 20 samples · standard mode · 2026-06-27T00:00:00Z
+**Overall: 56.5/100** · model `claude-opus-4-8` · 10 prompts · 20 samples · standard mode · confidence: medium · 2026-06-27T00:00:00Z
+
+## Executive summary
+
+Northwind scores 56.5/100 for brand visibility on Claude (model claude-opus-4-8), measured across 10 prompts and 20 samples. It is mentioned in 50% of answers, with a 29% share of voice against its competitors. Visibility is 67% on direct "best <category>" questions but 25% on the problem-led questions buyers ask earlier in the journey. It is strongest on accuracy (67%) and weakest on share of voice (29%). The model makes 0 contradicted and 1 unsupported claim(s) about the brand. Top priority: Close the gap on "Best hotel for a business trip to Lisbon?".
 
 ## Dimensions
 
@@ -20,6 +24,12 @@ Where category demand forms vs. where you show up.
 |---|---|---|
 | Direct ("best <category>") | 6 | 67% |
 | Indirect (problem / jobs-to-be-done) | 4 | 25% |
+
+## Recommended actions
+
+1. **Close the gap on "Best hotel for a business trip to Lisbon?"** _(impact: high, effort: medium)_
+2. **Close the gap on "Family-friendly accommodation in Lisbon?"** _(impact: high, effort: medium)_
+3. **Close the gap on "How do I plan a Lisbon in Lisbon?"** _(impact: high, effort: medium)_
 
 ## Competitor leaderboard
 

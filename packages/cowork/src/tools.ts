@@ -10,9 +10,11 @@ import {
   createClaudeProvider,
   listPacks,
   getPack,
+  generatePromptUniverse,
   type ClaudeProvider,
   type BrandReport,
   type LeaderboardEntry,
+  type SetupSuggestion,
 } from "@jusbrandmax/engine";
 
 export interface ToolDeps {
@@ -97,6 +99,18 @@ export function listCompetitorsTool(
   const latest = store.latest(args.brand);
   store.close();
   return { brand: args.brand, leaderboard: latest?.leaderboard ?? [] };
+}
+
+export async function suggestSetupTool(
+  args: { brand: string; description?: string; model?: string },
+  deps: ToolDeps,
+): Promise<SetupSuggestion> {
+  const provider = deps.makeProvider(deps.env["ANTHROPIC_API_KEY"]);
+  return generatePromptUniverse(provider, {
+    brand: args.brand,
+    model: args.model ?? "claude-opus-4-8",
+    ...(args.description ? { description: args.description } : {}),
+  });
 }
 
 export function listPacksTool(args: { category?: string } = {}): unknown {

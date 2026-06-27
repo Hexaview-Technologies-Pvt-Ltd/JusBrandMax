@@ -4,7 +4,7 @@
 
 ## Executive summary
 
-Northwind scores 56.5/100 for brand visibility on Claude (model claude-opus-4-8), measured across 10 prompts and 20 samples. It is mentioned in 50% of answers, with a 29% share of voice against its competitors. Visibility is 67% on direct "best <category>" questions but 25% on the problem-led questions buyers ask earlier in the journey. It is strongest on accuracy (67%) and weakest on share of voice (29%). The model makes 0 contradicted and 1 unsupported claim(s) about the brand. Top priority: Close the gap on "Best budget running shoes for beginners?".
+Northwind scores 56.5/100 for brand visibility on Claude (model claude-opus-4-8), measured across 10 prompts and 20 samples. It is mentioned in 50% of answers, with a 29% share of voice against its competitors. Visibility is 67% on direct "best <category>" questions but 25% on the problem-led questions buyers ask earlier in the journey. It is strongest on accuracy (67%) and weakest on share of voice (29%). The model makes 0 contradicted and 1 unsupported claim(s) about the brand. Top priority: Close the gap on "Recommend an affordable CRM platform.".
 
 ## Dimensions
 
@@ -35,11 +35,11 @@ Where category demand forms vs. where you show up.
 
 ## Recommended actions
 
-1. **Close the gap on "Best budget running shoes for beginners?"** _(impact: high, effort: medium)_
+1. **Close the gap on "Recommend an affordable CRM platform."** _(impact: high, effort: medium)_
    Competitors (Globex, Initech) appear here and you don't. Create content that directly answers this question.
-2. **Close the gap on "What's the best running shoes under running shoes?"** _(impact: high, effort: medium)_
+2. **Close the gap on "Are there good open-source alternatives for CRM software?"** _(impact: high, effort: medium)_
    Competitors (Globex, Initech) appear here and you don't. Create content that directly answers this question.
-3. **Close the gap on "Is it worth upgrading my running shoes?"** _(impact: high, effort: medium)_
+3. **Close the gap on "How can a small team automate CRM?"** _(impact: high, effort: medium)_
    Competitors (Globex, Initech) appear here and you don't. Create content that directly answers this question.
 4. **Ground 1 unverifiable claim(s)** _(impact: medium, effort: low)_
    The model asserts facts it can't support. Add a Brand Knowledge Pack so the record is verifiable.
@@ -56,49 +56,49 @@ Where category demand forms vs. where you show up.
 
 ## Gaps (competitors win, you're absent)
 
-- **Best budget running shoes for beginners?** → Globex, Initech
-- **What's the best running shoes under running shoes?** → Globex, Initech
-- **Is it worth upgrading my running shoes?** → Globex, Initech
-- **How do I make my running shoes last longer?** → Globex, Initech
-- **What should I look for when buying a running shoes?** → Globex, Initech
+- **Recommend an affordable CRM platform.** → Globex, Initech
+- **Are there good open-source alternatives for CRM software?** → Globex, Initech
+- **How can a small team automate CRM?** → Globex, Initech
+- **What's the best way to manage CRM as we scale?** → Globex, Initech
+- **How do I reduce CRM in my CRM team?** → Globex, Initech
 
 ## Evidence (what the model actually said)
 
-- **What is the best running shoes to buy right now?**
+- **What is the best CRM software for a small startup?**
   > Northwind is a strong choice, alongside Globex.
-- **Which brand makes the most reliable running shoes?**
+- **Which CRM tool has the best automation?**
   > Northwind is a strong choice, alongside Globex.
-- **Best budget running shoes for beginners?**
+- **Recommend an affordable CRM platform.**
   > Globex and Initech are popular.  _(brand absent — this is what appeared instead)_
-- **What running shoes do experts recommend for running shoes?**
+- **What CRM software integrates well with CRM?**
   > Northwind is a strong choice, alongside Globex.
-- **Most sustainable / ethical running shoes brands?**
+- **Best CRM tool for enterprise security and compliance?**
   > Northwind is a strong choice, alongside Globex.
-- **What's the best running shoes under running shoes?**
+- **Are there good open-source alternatives for CRM software?**
   > Globex and Initech are popular.  _(brand absent — this is what appeared instead)_
-- **How do I choose the right running shoes for running shoes?**
+- **How do I CRM more efficiently?**
   > Northwind can help; so can Globex.
-- **Is it worth upgrading my running shoes?**
+- **How can a small team automate CRM?**
   > Consider Globex or Initech.  _(brand absent — this is what appeared instead)_
-- **How do I make my running shoes last longer?**
+- **What's the best way to manage CRM as we scale?**
   > Consider Globex or Initech.  _(brand absent — this is what appeared instead)_
-- **What should I look for when buying a running shoes?**
+- **How do I reduce CRM in my CRM team?**
   > Consider Globex or Initech.  _(brand absent — this is what appeared instead)_
 
 ## Per-prompt visibility
 
 | Prompt | Visibility |
 |---|---|
-| What is the best running shoes to buy right now? | 100% |
-| Which brand makes the most reliable running shoes? | 100% |
-| Best budget running shoes for beginners? | 0% |
-| What running shoes do experts recommend for running shoes? | 100% |
-| Most sustainable / ethical running shoes brands? | 100% |
-| What's the best running shoes under running shoes? | 0% |
-| How do I choose the right running shoes for running shoes? | 100% |
-| Is it worth upgrading my running shoes? | 0% |
-| How do I make my running shoes last longer? | 0% |
-| What should I look for when buying a running shoes? | 0% |
+| What is the best CRM software for a small startup? | 100% |
+| Which CRM tool has the best automation? | 100% |
+| Recommend an affordable CRM platform. | 0% |
+| What CRM software integrates well with CRM? | 100% |
+| Best CRM tool for enterprise security and compliance? | 100% |
+| Are there good open-source alternatives for CRM software? | 0% |
+| How do I CRM more efficiently? | 100% |
+| How can a small team automate CRM? | 0% |
+| What's the best way to manage CRM as we scale? | 0% |
+| How do I reduce CRM in my CRM team? | 0% |
 
 ---
 _Generated by jusBrandMax — MIT, open-source brand visibility for Claude._
