@@ -7,7 +7,12 @@
     "Which CRM has the best automation?",
     "Affordable CRM recommendations?"
   ],
+  "indirectPrompts": [
+    "How do I stop losing track of sales leads?",
+    "What's the best way to follow up with customers?"
+  ],
   "provider": "anthropic",
+  "mode": "standard",
   "model": "claude-opus-4-8",
   "samples": 2
 }

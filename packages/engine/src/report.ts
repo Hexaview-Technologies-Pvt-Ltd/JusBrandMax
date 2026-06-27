@@ -7,7 +7,7 @@
  * white-label by default — no jusBrandMax branding unless `footer: true`.
  */
 import type { AskResult, ClaudeProvider } from "./provider.js";
-import type { BrandConfig } from "./config.js";
+import { modeSamples, type BrandConfig, type ReportMode } from "./config.js";
 import { detectMention } from "./mentions.js";
 import { providerEngineLabel } from "./provider-factory.js";
 import {
@@ -50,6 +50,11 @@ export interface BrandReport {
   };
   leaderboard: LeaderboardEntry[];
   gaps: GapItem[];
+  /** Visibility split by intent — direct ("best X") vs indirect (problem/jobs-to-be-done). */
+  intentBreakdown: {
+    direct: { promptCount: number; visibility: number };
+    indirect: { promptCount: number; visibility: number };
+  };
   /** Blended 0–100 headline score. */
   overall: number;
 }
@@ -65,6 +70,8 @@ export interface ComputeReportInput {
   runs: AskResult[];
   sentimentLabels: SentimentLabel[];
   accuracyClaims: ClaimCheck[];
+  /** Prompt texts that are indirect-intent (used to split the intent breakdown). */
+  indirectPrompts?: string[];
 }
 
 export function computeReport(input: ComputeReportInput): BrandReport {
@@ -76,6 +83,16 @@ export function computeReport(input: ComputeReportInput): BrandReport {
   const accuracy = aggregateAccuracy(input.accuracyClaims);
   const leaderboard = buildLeaderboard(runs, brandNames, competitors, brand);
   const gaps = findGaps(runs, brandNames, competitors);
+
+  // Intent breakdown: how visible the brand is on direct vs indirect-intent prompts.
+  const indirectSet = new Set(input.indirectPrompts ?? []);
+  const directRuns = runs.filter((r) => !indirectSet.has(r.prompt));
+  const indirectRuns = runs.filter((r) => indirectSet.has(r.prompt));
+  const band = (rs: AskResult[]) => {
+    const v = scoreVisibility(rs, brandNames);
+    return { promptCount: v.promptCount, visibility: v.visibility };
+  };
+  const intentBreakdown = { direct: band(directRuns), indirect: band(indirectRuns) };
 
   // Overall = weighted blend of the six dimensions, scaled to 0–100.
   // Sentiment net (−1..1) is normalized to 0..1 first.
@@ -98,6 +115,7 @@ export function computeReport(input: ComputeReportInput): BrandReport {
     dimensions: { presence, shareOfVoice, prominence, sentiment, accuracy },
     leaderboard,
     gaps,
+    intentBreakdown,
     overall: Math.round(overall * 10) / 10,
   };
 }
@@ -117,9 +135,11 @@ export async function runReport(
   const runs: AskResult[] = [];
   const sentimentLabels: SentimentLabel[] = [];
   const accuracyClaims: ClaimCheck[] = [];
+  const samples = modeSamples(config.mode, config.samples);
+  const allPrompts = [...config.prompts, ...config.indirectPrompts];
 
-  for (const prompt of config.prompts) {
-    const res = await provider.ask(prompt, { model: config.model, samples: config.samples });
+  for (const prompt of allPrompts) {
+    const res = await provider.ask(prompt, { model: config.model, samples });
     runs.push(res);
     for (const answer of res.responses) {
       if (!detectMention(answer, brandNames).matched) {
@@ -148,6 +168,7 @@ export async function runReport(
     runs,
     sentimentLabels,
     accuracyClaims,
+    indirectPrompts: config.indirectPrompts,
   });
 }
 
@@ -155,16 +176,19 @@ export async function runReport(
 export interface RenderOptions {
   /** Include a jusBrandMax footer (off by default — reports are white-label). */
   footer?: boolean;
+  /** Report depth (default "standard"). quick = headline; detailed = + per-prompt drill-down. */
+  mode?: ReportMode;
 }
 
 const pct = (x: number): string => `${(x * 100).toFixed(0)}%`;
 
 export function renderMarkdown(r: BrandReport, opts: RenderOptions = {}): string {
+  const mode: ReportMode = opts.mode ?? "standard";
   const d = r.dimensions;
   const lines: string[] = [
     `# Brand Visibility on ${r.engine} — ${r.brand}`,
     "",
-    `**Overall: ${r.overall}/100** · model \`${r.model}\` · ${r.promptCount} prompts · ${r.sampleCount} samples · ${r.generatedAt}`,
+    `**Overall: ${r.overall}/100** · model \`${r.model}\` · ${r.promptCount} prompts · ${r.sampleCount} samples · ${mode} mode · ${r.generatedAt}`,
     "",
     "## Dimensions",
     "",
@@ -176,22 +200,55 @@ export function renderMarkdown(r: BrandReport, opts: RenderOptions = {}): string
     `| Sentiment (net) | ${d.sentiment.net.toFixed(2)} |`,
     `| Accuracy | ${pct(d.accuracy.accuracy)} (${d.accuracy.contradicted} contradicted, ${d.accuracy.unsupported} unsupported) |`,
     "",
-    "## Competitor leaderboard",
-    "",
-    "| Rank | Brand | Share | Mentions |",
-    "|---|---|---|---|",
-    ...r.leaderboard.map(
-      (e, i) =>
-        `| ${i + 1} | ${e.isBrand ? `**${e.name}**` : e.name} | ${pct(e.share)} | ${e.mentioningSamples} |`,
-    ),
-    "",
-    "## Gaps (competitors win, you're absent)",
-    "",
-    r.gaps.length === 0
-      ? "_No hard gaps — the brand appears wherever competitors do._"
-      : r.gaps.map((g) => `- **${g.prompt}** → ${g.competitorsPresent.join(", ")}`).join("\n"),
-    "",
   ];
+
+  // Intent breakdown (standard + detailed): direct vs indirect-intent visibility.
+  if (mode !== "quick" && r.intentBreakdown.indirect.promptCount > 0) {
+    lines.push(
+      "## Intent breakdown",
+      "",
+      "Where category demand forms vs. where you show up.",
+      "",
+      "| Intent | Prompts | Visibility |",
+      "|---|---|---|",
+      `| Direct ("best <category>") | ${r.intentBreakdown.direct.promptCount} | ${pct(r.intentBreakdown.direct.visibility)} |`,
+      `| Indirect (problem / jobs-to-be-done) | ${r.intentBreakdown.indirect.promptCount} | ${pct(r.intentBreakdown.indirect.visibility)} |`,
+      "",
+    );
+  }
+
+  if (mode !== "quick") {
+    lines.push(
+      "## Competitor leaderboard",
+      "",
+      "| Rank | Brand | Share | Mentions |",
+      "|---|---|---|---|",
+      ...r.leaderboard.map(
+        (e, i) =>
+          `| ${i + 1} | ${e.isBrand ? `**${e.name}**` : e.name} | ${pct(e.share)} | ${e.mentioningSamples} |`,
+      ),
+      "",
+      "## Gaps (competitors win, you're absent)",
+      "",
+      r.gaps.length === 0
+        ? "_No hard gaps — the brand appears wherever competitors do._"
+        : r.gaps.map((g) => `- **${g.prompt}** → ${g.competitorsPresent.join(", ")}`).join("\n"),
+      "",
+    );
+  }
+
+  // Detailed: per-prompt visibility drill-down.
+  if (mode === "detailed") {
+    lines.push(
+      "## Per-prompt visibility",
+      "",
+      "| Prompt | Visibility |",
+      "|---|---|",
+      ...r.dimensions.presence.perPrompt.map((p) => `| ${p.prompt} | ${pct(p.rate)} |`),
+      "",
+    );
+  }
+
   if (opts.footer) {
     lines.push("---", "_Generated by jusBrandMax — MIT, open-source brand visibility for Claude._");
   }

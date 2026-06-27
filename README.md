@@ -72,23 +72,25 @@ jusbrandmax watch     # shows the trend vs your last run
 **In Cowork (marketers, in plain chat):**
 
 > **You:** How visible is "Acme CRM" on Claude vs Globex and Initech?
-> **Claude:** *(calls `run_brand_report`)* Acme CRM scores **65/100**. You're mentioned in 67% of answers — but you're **absent from every "best automation" prompt**, where Globex and Initech both win. Claude also claimed you have a built-in phone dialer, which your facts don't support. Want me to draft an automation page and a correction?
+> **Claude:** *(calls `run_brand_report`)* Acme CRM scores **56/100**. You're in **67% of direct "best CRM" answers — but 0% of the problem-led questions** buyers actually start with (like *"how do I stop losing leads?"*), where Globex and Initech win. Claude also claimed you have a built-in phone dialer, which your facts don't support. Want me to draft a lead-tracking guide and a correction?
 
 ### What a report looks like (real engine output, [`examples/brand-report.md`](./examples/brand-report.md))
 
 ```text
-Brand Visibility on Claude — Acme CRM        Overall: 65.3/100
+Brand Visibility on Claude — Acme CRM        Overall: 55.8/100
 
 | Dimension                       | Score |
-| Presence (visibility)           | 67%   |
-| Share of Voice                  | 29%   |
+| Presence (visibility)           | 40%   |
+| Share of Voice                  | 21%   |
 | Prominence (first-mention rate) | 75%   |
 | Sentiment (net)                 | 1.00  |
 | Accuracy                        | 67% (0 contradicted, 1 unsupported) |
 
-Competitor leaderboard:  1. Initech 43% · 2. Acme CRM 29% · 3. Globex 29%
-Gaps:  "Which CRM has the best automation?" → Globex, Initech
+Intent:  direct ("best CRM") 67%  ·  indirect (problem-led) 0%   ← the early-funnel gap
+Leaderboard:  1. Initech 42%  ·  2. Globex 37%  ·  3. Acme CRM 21%
 ```
+
+Full version: [`examples/brand-report.md`](./examples/brand-report.md).
 
 Reports are **white-label by default** (no jusBrandMax branding) and saved to local SQLite history so `watch` can show deltas over time.
 
@@ -109,6 +111,28 @@ jusbrandmax init --category ecommerce   # scaffold an e-commerce config
 `ecommerce` · `software` · `hardware` · `travel` · `hospitality` · `finance` · `healthcare` · `professional-services`
 
 **E-commerce is the first battleground** — buyers increasingly delegate the purchase decision to the model. See the [special report on why it matters →](./THESIS.md#special-report-e-commerce-brand-visibility).
+
+**Direct *and* indirect intent.** Each pack measures two bands: **direct** ("best `<category>`?" — active shopping) and **indirect** — the problem / jobs-to-be-done questions that drive demand *before* the buyer names the category ("how do I solve `<problem>`?"). Showing up on direct prompts but vanishing on indirect ones is the early-funnel gap most brands never see — the report calls it out explicitly.
+
+### Sample reports (representative, fictitious brands)
+
+By category: [ecommerce](./examples/reports/ecommerce.md) · [software](./examples/reports/software.md) · [hardware](./examples/reports/hardware.md) · [travel](./examples/reports/travel.md) · [hospitality](./examples/reports/hospitality.md) · [finance](./examples/reports/finance.md) · [healthcare](./examples/reports/healthcare.md) · [professional-services](./examples/reports/professional-services.md)
+
+### Report modes — depth on demand
+
+`--mode quick | standard | detailed` trades depth for speed and cost:
+
+| Mode | Samples/prompt | Includes |
+|---|---|---|
+| `quick` | 1 | Headline score + dimensions |
+| `standard` | your `samples` (default 3) | + intent breakdown, competitor leaderboard, gaps |
+| `detailed` | ≥ 4 | + per-prompt visibility drill-down |
+
+```bash
+jusbrandmax report --mode detailed
+```
+
+See the difference: [quick](./examples/reports/ecommerce-quick.md) vs [detailed](./examples/reports/ecommerce-detailed.md).
 
 ---
 

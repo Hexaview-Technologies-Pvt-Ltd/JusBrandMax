@@ -99,3 +99,38 @@ describe("renderers", () => {
     expect(renderHtml(report)).toContain("<table");
   });
 });
+
+describe("intent breakdown & modes", () => {
+  const base = computeReport({
+    brand: "Acme",
+    model: "m",
+    generatedAt: "t",
+    brandNames: ["Acme"],
+    competitors: ["Beta"],
+    runs: [
+      run("best crm?", ["Acme and Beta"]), // direct — brand present
+      run("how do I track leads?", ["Beta is good"]), // indirect — brand absent
+    ],
+    sentimentLabels: ["positive", "absent"],
+    accuracyClaims: [],
+    indirectPrompts: ["how do I track leads?"],
+  });
+
+  it("splits visibility by direct vs indirect intent", () => {
+    expect(base.intentBreakdown.direct).toEqual({ promptCount: 1, visibility: 1 });
+    expect(base.intentBreakdown.indirect).toEqual({ promptCount: 1, visibility: 0 });
+  });
+
+  it("quick mode is headline-only; standard adds leaderboard + intent; detailed adds per-prompt", () => {
+    const quick = renderMarkdown(base, { mode: "quick" });
+    expect(quick).not.toContain("Competitor leaderboard");
+    expect(quick).not.toContain("Intent breakdown");
+
+    const std = renderMarkdown(base, { mode: "standard" });
+    expect(std).toContain("Competitor leaderboard");
+    expect(std).toContain("Intent breakdown");
+
+    const det = renderMarkdown(base, { mode: "detailed" });
+    expect(det).toContain("Per-prompt visibility");
+  });
+});

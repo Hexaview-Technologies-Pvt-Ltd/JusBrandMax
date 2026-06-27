@@ -33,10 +33,12 @@ export function defaultToolDeps(): ToolDeps {
 export interface RunBrandReportArgs {
   brand: string;
   prompts: string[];
+  indirectPrompts?: string[];
   competitors?: string[];
   aliases?: string[];
   model?: string;
   samples?: number;
+  mode?: "quick" | "standard" | "detailed";
   /** Persist to local history (default true). */
   persist?: boolean;
 }
@@ -48,10 +50,12 @@ export async function runBrandReportTool(
   const config = resolveBrandConfig({
     brand: args.brand,
     prompts: args.prompts,
+    ...(args.indirectPrompts ? { indirectPrompts: args.indirectPrompts } : {}),
     ...(args.competitors ? { competitors: args.competitors } : {}),
     ...(args.aliases ? { aliases: args.aliases } : {}),
     ...(args.model ? { model: args.model } : {}),
     ...(args.samples ? { samples: args.samples } : {}),
+    ...(args.mode ? { mode: args.mode } : {}),
   });
   const provider = deps.makeProvider(deps.env["ANTHROPIC_API_KEY"]);
   const report = await runReport(provider, config, deps.now ? { now: deps.now() } : {});

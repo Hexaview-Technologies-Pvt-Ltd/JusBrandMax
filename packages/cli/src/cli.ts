@@ -21,6 +21,7 @@ import {
   type ClaudeProvider,
   type BrandReport,
   type ReportDeltas,
+  type ReportMode,
 } from "@jusbrandmax/engine";
 
 export interface ParsedArgs {
@@ -71,6 +72,11 @@ const SAMPLE_CONFIG = {
     "recommend a <category> solution for a small team",
     "compare the top <category> products",
   ],
+  indirectPrompts: [
+    "how do I solve <problem the category addresses>?",
+    "what's the best way to <job to be done>?",
+  ],
+  mode: "standard",
   model: "claude-opus-4-8",
   samples: 3,
 };
@@ -81,7 +87,7 @@ Usage:
   jusbrandmax init    [--config brand.config.json] [--category <id>]
   jusbrandmax packs   list the category report packs (ecommerce, travel, …)
   jusbrandmax report  [--config brand.config.json] [--out brand-report.md]
-                      [--format md|html] [--db <path>] [--footer]
+                      [--mode quick|standard|detailed] [--format md|html] [--db <path>] [--footer]
   jusbrandmax watch   [--config brand.config.json] [--db <path>]
   jusbrandmax help
 
@@ -103,6 +109,12 @@ function printSummary(out: (s: string) => void, r: BrandReport, deltas: ReportDe
   out(`  Prominence     ${(d.prominence.firstMentionRate * 100).toFixed(0)}%`);
   out(`  Sentiment      ${d.sentiment.net.toFixed(2)}`);
   out(`  Accuracy       ${(d.accuracy.accuracy * 100).toFixed(0)}%`);
+  if (r.intentBreakdown.indirect.promptCount > 0) {
+    out(
+      `  Intent         direct ${(r.intentBreakdown.direct.visibility * 100).toFixed(0)}% · ` +
+        `indirect ${(r.intentBreakdown.indirect.visibility * 100).toFixed(0)}%`,
+    );
+  }
   if (deltas) {
     out(`\nSince last run: overall ${deltas.overall >= 0 ? "+" : ""}${deltas.overall.toFixed(1)}, ` +
       `presence ${fmtPp(deltas.visibility)}, SoV ${fmtPp(deltas.shareOfVoice)}`);
@@ -138,7 +150,7 @@ export async function runCli(argv: string[], partial: Partial<CliDeps> = {}): Pr
           deps.stderr(`Unknown category '${category}'. Run 'jusbrandmax packs' to list them.`);
           return 1;
         }
-        config = { ...SAMPLE_CONFIG, prompts: pack.prompts };
+        config = { ...SAMPLE_CONFIG, prompts: pack.prompts, indirectPrompts: pack.indirectPrompts };
       }
       writeFileSync(configPath, JSON.stringify(config, null, 2) + "\n");
       deps.stdout(`Wrote ${category ? `'${category}' ` : "sample "}config to ${configPath}.`);
@@ -165,6 +177,14 @@ export async function runCli(argv: string[], partial: Partial<CliDeps> = {}): Pr
         return 1;
       }
       const config = loadBrandConfig(configPath);
+      const modeFlag = flagStr(flags, "mode");
+      if (modeFlag) {
+        if (modeFlag !== "quick" && modeFlag !== "standard" && modeFlag !== "detailed") {
+          deps.stderr(`Unknown --mode '${modeFlag}'. Use quick | standard | detailed.`);
+          return 1;
+        }
+        config.mode = modeFlag as ReportMode;
+      }
       const keyEnv = keyEnvFor(config.provider);
       const usingReal = !partial.makeProvider;
       if (usingReal && !deps.env[keyEnv]) {
@@ -184,7 +204,10 @@ export async function runCli(argv: string[], partial: Partial<CliDeps> = {}): Pr
 
       const format = flagStr(flags, "format") ?? "md";
       const footer = flags["footer"] === true;
-      const out = format === "html" ? renderHtml(report, { footer }) : renderMarkdown(report, { footer });
+      const out =
+        format === "html"
+          ? renderHtml(report, { footer })
+          : renderMarkdown(report, { footer, mode: config.mode });
       const outPath = join(deps.cwd, flagStr(flags, "out") ?? (format === "html" ? "brand-report.html" : "brand-report.md"));
       writeFileSync(outPath, out);
 

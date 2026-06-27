@@ -30,11 +30,17 @@ export const TOOLS = [
       type: "object",
       properties: {
         brand: { type: "string", description: "The brand to measure." },
-        prompts: { type: "array", items: { type: "string" }, description: "Category questions buyers ask Claude." },
+        prompts: { type: "array", items: { type: "string" }, description: "Direct-intent category questions." },
+        indirectPrompts: {
+          type: "array",
+          items: { type: "string" },
+          description: "Indirect-intent (problem / jobs-to-be-done) questions.",
+        },
         competitors: { type: "array", items: { type: "string" } },
         aliases: { type: "array", items: { type: "string" } },
         model: { type: "string" },
         samples: { type: "number" },
+        mode: { type: "string", enum: ["quick", "standard", "detailed"] },
         persist: { type: "boolean" },
       },
       required: ["brand", "prompts"],

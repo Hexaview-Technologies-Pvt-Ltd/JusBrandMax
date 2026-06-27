@@ -9,10 +9,18 @@ describe("category packs", () => {
     }
   });
 
-  it("getPack is case-insensitive and returns prompts", () => {
+  it("getPack is case-insensitive and returns direct + indirect prompts", () => {
     const pack = getPack("ECOMMERCE");
     expect(pack?.label).toMatch(/E-commerce/i);
     expect(pack?.prompts.length).toBeGreaterThan(5);
+    expect(pack?.indirectPrompts.length).toBeGreaterThan(2);
+  });
+
+  it("every pack has both intent bands", () => {
+    for (const p of CATEGORY_PACKS) {
+      expect(p.prompts.length, p.id).toBeGreaterThan(0);
+      expect(p.indirectPrompts.length, p.id).toBeGreaterThan(0);
+    }
   });
 
   it("returns undefined for unknown ids", () => {
@@ -23,7 +31,7 @@ describe("category packs", () => {
     // Guard against accidentally hardcoding a competitor/vendor trademark in a pack.
     const banned = /\b(salesforce|hubspot|booking\.com|airbnb|expedia|shopify|amazon|google|profound|peec|athena|otterly|scrunch)\b/i;
     for (const pack of CATEGORY_PACKS) {
-      for (const prompt of pack.prompts) {
+      for (const prompt of [...pack.prompts, ...pack.indirectPrompts]) {
         expect(banned.test(prompt), `${pack.id}: "${prompt}"`).toBe(false);
       }
     }

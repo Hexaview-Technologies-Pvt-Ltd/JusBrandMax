@@ -9,6 +9,16 @@ import { readFileSync } from "node:fs";
 /** Which LLM engine to measure. Claude is the default (P1); OpenAI-compatible is P2. */
 export type ProviderName = "anthropic" | "openai";
 
+/** Report depth: quick (headline, cheapest), standard (default), detailed (drill-down + more samples). */
+export type ReportMode = "quick" | "standard" | "detailed";
+
+/** Effective samples-per-prompt for a mode, given the configured baseline. */
+export function modeSamples(mode: ReportMode, base: number): number {
+  if (mode === "quick") return 1;
+  if (mode === "detailed") return Math.max(base, 4);
+  return base;
+}
+
 /** Fully-resolved config with all defaults applied. */
 export interface BrandConfig {
   /** The brand whose visibility we measure. */
@@ -17,8 +27,12 @@ export interface BrandConfig {
   aliases: string[];
   /** Competitor brands to measure Share of Voice against. */
   competitors: string[];
-  /** The category prompts Claude is asked. */
+  /** Direct-intent prompts ("best <category>?") Claude is asked. */
   prompts: string[];
+  /** Indirect-intent prompts — problem/jobs-to-be-done questions that drive the category without naming it. */
+  indirectPrompts: string[];
+  /** Report depth (default "standard"). */
+  mode: ReportMode;
   /** Which engine to measure (default "anthropic" → Claude). */
   provider: ProviderName;
   /** Override the API base URL (OpenAI-compatible engines, self-hosted, etc.). */
@@ -41,6 +55,8 @@ export interface BrandConfigInput {
   aliases?: string[];
   competitors?: string[];
   prompts?: string[];
+  indirectPrompts?: string[];
+  mode?: ReportMode;
   provider?: ProviderName;
   baseURL?: string;
   model?: string;
@@ -73,12 +89,18 @@ export function resolveBrandConfig(input: BrandConfigInput): BrandConfig {
   if (provider !== "anthropic" && provider !== "openai") {
     throw new Error("BrandConfig: 'provider' must be 'anthropic' or 'openai'.");
   }
+  const mode = input.mode ?? "standard";
+  if (mode !== "quick" && mode !== "standard" && mode !== "detailed") {
+    throw new Error("BrandConfig: 'mode' must be 'quick', 'standard', or 'detailed'.");
+  }
 
   return {
     brand: input.brand.trim(),
     aliases: cleanList(input.aliases),
     competitors: cleanList(input.competitors),
     prompts: cleanList(input.prompts),
+    indirectPrompts: cleanList(input.indirectPrompts),
+    mode,
     provider,
     ...(input.baseURL ? { baseURL: input.baseURL.trim() } : {}),
     model: input.model?.trim() || DEFAULT_MODEL,

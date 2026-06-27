@@ -39,6 +39,18 @@ describe("resolveBrandConfig", () => {
     expect(resolveBrandConfig({ brand: "A", prompts: ["x"], provider: "openai" }).provider).toBe("openai");
   });
 
+  it("defaults mode to standard and cleans indirect prompts", () => {
+    const c = resolveBrandConfig({ brand: "A", prompts: ["x"], indirectPrompts: [" how do I y? ", ""] });
+    expect(c.mode).toBe("standard");
+    expect(c.indirectPrompts).toEqual(["how do I y?"]);
+  });
+
+  it("rejects an unknown mode", () => {
+    expect(() =>
+      resolveBrandConfig({ brand: "A", prompts: ["x"], mode: "turbo" as never }),
+    ).toThrow(/mode/);
+  });
+
   it("rejects an unknown provider", () => {
     expect(() =>
       resolveBrandConfig({ brand: "A", prompts: ["x"], provider: "gemini" as never }),
