@@ -1,61 +1,116 @@
 # jusBrandMax
 
 **The open-source brand command center for Claude.**
-Measure how visible your brand is on Claude, find out what Claude says about you, and fix it — all without leaving Claude.
+Measure how visible your brand is on Claude, see exactly what Claude tells people about you, and fix it — without leaving Claude.
 
-> **100% MIT-licensed. No paid tier, no seats, no sales call, no black box.**
-> Every competitor in this space is closed SaaS ($29–$5,000+/mo). jusBrandMax is free, self-hostable, and its scoring is auditable code.
+![license](https://img.shields.io/badge/license-MIT-green) ![tests](https://img.shields.io/badge/tests-49%20passing-brightgreen) ![node](https://img.shields.io/badge/node-%E2%89%A520-blue) ![price](https://img.shields.io/badge/price-%240-blue) ![BYO key](https://img.shields.io/badge/bring--your--own--key-yes-orange)
 
-### The competitive story, up front
+> Built by **Kashi** ([linkedin](https://www.linkedin.com/in/kashiks/)) and
+> **Rajan** ([linkedin](https://www.linkedin.com/in/thiyagarajan/)), founders of
+> [Kalmantic](https://www.kalmantic.com). **MIT licensed.**
 
-Every rival is closed SaaS — **$29–$5,000+/mo, black-box, and lives outside your workflow.** jusBrandMax's [10 structural advantages](#why-jusbrandmax-wins-the-wedge) all flow from inverting that one fact. Our **five durable edges**:
-
-1. **Open methodology** — scoring is auditable, forkable code, not a black box.
-2. **Agent-native** — act *and* measure in a single Claude session.
-3. **Free / self-hostable** — no procurement, no per-seat tax, your data stays on your machine.
-4. **White-label by default** — agencies rebrand freely.
-5. **Composable** — a plugin *and* an MCP server, so it drops into CI and other agents.
-
-jusBrandMax ships as **two plugins over one shared engine**, both targeting Claude:
-
-| Surface | What it is | Who it's for |
-|---|---|---|
-| **CLI plugin** | A Claude Code plugin — slash commands (`/brand-report`, `/brand-watch`), subagents, hooks, bundled MCP. Agentic / terminal workload. | Developers, agencies, growth engineers, CI |
-| **Cowork plugin** | An **MCP connector + Agent Skill** for Claude.ai / Claude Desktop. Add it to a Project and chat: *"How visible is my brand on Claude?"* | Brand & marketing teams (non-technical) |
-
-**Scope:** Claude-only by design — the hero deliverable is the **Brand Visibility on Claude** report. The engine is built model-agnostic so other engines *can* be added, but Claude is the whole point of v1.
+When buyers research your category, more and more of them ask **Claude** instead of Google. If Claude doesn't mention you — or worse, says something wrong about you — you lose the deal before you ever hear about it. jusBrandMax turns that invisible conversation into a **scored report you can act on**, runs entirely on your machine with your own API key, and lets Claude *fix* what it finds in the same session. Every paid tool in this space is closed SaaS at **$29–$5,000+/mo**; jusBrandMax is **$0, open source, and self-hostable.**
 
 ---
 
-## Why jusBrandMax wins (the wedge)
+## Install
 
-Today's AI-visibility tools are powerful but closed, expensive, and live *outside* your workflow. jusBrandMax inverts all three.
+**As a Claude Code plugin** — from inside Claude Code, run these **one at a time** (one slash command per prompt):
 
-| Axis | Profound | Peec | AthenaHQ | Scrunch | Otterly | **jusBrandMax** |
+1. `/plugin marketplace add https://github.com/KashiKS/jusBrandMax.git`
+2. `/plugin install jusbrandmax@jusbrandmax`
+3. `/reload-plugins`
+
+You now have `/brand-init`, `/brand-report`, and `/brand-watch`.
+
+**As a Cowork connector** (Claude.ai / Claude Desktop, for non-technical marketers) — add a custom MCP connector pointing at the jusBrandMax server, then chat with it:
+
+```jsonc
+// Claude Desktop → Settings → Connectors → Add custom connector
+{
+  "command": "npx",
+  "args": ["-y", "@jusbrandmax/cowork"]   // or: node /path/to/jusBrandMax/packages/cowork/dist/main.js
+}
+```
+
+The bundled [Agent Skill](./packages/cowork/skill/SKILL.md) teaches Claude how to drive it, so you can just ask *"How visible is my brand on Claude?"*
+
+**From source (works today — Node ≥ 20 + pnpm):**
+
+```bash
+git clone https://github.com/KashiKS/jusBrandMax && cd jusBrandMax
+pnpm install && pnpm -r build
+export ANTHROPIC_API_KEY=sk-ant-...        # bring-your-own-key; never leaves your machine
+node packages/cli/dist/main.js --help
+```
+
+---
+
+## Seamless in Claude & Cowork
+
+**In Claude Code (developers, agencies, CI):**
+
+```bash
+jusbrandmax init      # scaffolds brand.config.json — set brand, competitors, prompts
+jusbrandmax report    # runs the full report, writes brand-report.md, records history
+jusbrandmax watch     # shows the trend vs your last run
+```
+
+…or just say **`/brand-report`** in Claude Code and Claude runs it, reads the result, and offers to draft the fix.
+
+**In Cowork (marketers, in plain chat):**
+
+> **You:** How visible is "Acme CRM" on Claude vs Salesforce and HubSpot?
+> **Claude:** *(calls `run_brand_report`)* Acme CRM scores **65/100**. You're mentioned in 67% of answers — but you're **absent from every "best automation" prompt**, where Salesforce and HubSpot both win. Claude also claimed you have a built-in phone dialer, which your facts don't support. Want me to draft an automation page and a correction?
+
+### What a report looks like (real engine output, [`examples/brand-report.md`](./examples/brand-report.md))
+
+```text
+Brand Visibility on Claude — Acme CRM        Overall: 65.3/100
+
+| Dimension                       | Score |
+| Presence (visibility)           | 67%   |
+| Share of Voice                  | 29%   |
+| Prominence (first-mention rate) | 75%   |
+| Sentiment (net)                 | 1.00  |
+| Accuracy                        | 67% (0 contradicted, 1 unsupported) |
+
+Competitor leaderboard:  1. HubSpot 43% · 2. Acme CRM 29% · 3. Salesforce 29%
+Gaps:  "Which CRM has the best automation?" → Salesforce, HubSpot
+```
+
+Reports are **white-label by default** (no jusBrandMax branding) and saved to local SQLite history so `watch` can show deltas over time.
+
+---
+
+## jusBrandMax vs. the closed-SaaS field
+
+jusBrandMax is the only column you can read the source of, run for free, and host yourself.
+
+| | **jusBrandMax** | Profound | Peec | AthenaHQ | Scrunch | Otterly |
 |---|---|---|---|---|---|---|
-| **License** | Closed | Closed | Closed | Closed | Closed | **MIT (OSS)** ★ |
-| **Entry price** | ~$2k–5k+/mo, sales-gated | €89/mo | $95/mo | $250/mo | $29/mo | **$0** ★ |
-| **Self-host / local-first** | ✗ | ✗ | ✗ | ✗ | ✗ | **✓** ★ |
-| **Open / auditable scoring** | Black box | Black box | Black box | Black box | Black box | **✓ code** ★ |
-| **Runs inside Claude (agent-native)** | ✗ (dashboard) | ✗ | ✗ | ✗ | ✗ | **✓ CLI + Cowork** ★ |
-| **Acts on findings in-session** | ✗ | ✗ | partial | ✗ | ✗ | **✓** ★ |
-| **White-label** | Enterprise only | partial | partial | partial | ✗ | **✓ default** ★ |
-| **Bring-your-own-key (no markup)** | ✗ | ✗ | ✗ | ✗ | ✗ | **✓** ★ |
-| **CI / pipeline mode + JSON API** | upper tiers | ✗ | ✗ | ✗ | ✗ | **✓** ★ |
-| **Data residency** | Their cloud | Their cloud | Their cloud | Their cloud | Their cloud | **Your machine** ★ |
+| **License** | **MIT (open)** ★ | Closed | Closed | Closed | Closed | Closed |
+| **Entry price** | **$0** ★ | ~$2k–5k+/mo, sales-gated | €89/mo | $95/mo | $250/mo | $29/mo |
+| **Self-host / local-first** | **✓** ★ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| **Open / auditable scoring** | **✓ code** ★ | black box | black box | black box | black box | black box |
+| **Runs inside Claude (CLI + Cowork)** | **✓** ★ | ✗ (dashboard) | ✗ | ✗ | ✗ | ✗ |
+| **Acts on findings in-session** | **✓** ★ | ✗ | ✗ | partial | ✗ | ✗ |
+| **White-label by default** | **✓** ★ | enterprise only | partial | partial | partial | ✗ |
+| **Bring-your-own-key (no markup)** | **✓** ★ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| **CI / pipeline mode + JSON API** | **✓** ★ | upper tiers | ✗ | ✗ | ✗ | ✗ |
+| **Data residency** | **your machine** ★ | their cloud | their cloud | their cloud | their cloud | their cloud |
 
-**Our five durable advantages:**
-1. **Open methodology** — competitors hide how scores are computed. Ours is readable, forkable code. Trust by inspection.
-2. **Agent-native** — it lives *inside* Claude. Find a hallucination and have Claude rewrite the page in the same conversation. No dashboard context-switch.
-3. **Free + self-hostable** — no procurement, no per-seat tax; your competitive prompt strategy never leaves your machine.
-4. **White-label by default** — agencies rebrand freely (Profound's reports are Profound-branded).
-5. **Composable** — it's a plugin and an MCP server, so it drops into CI, other agents, and existing pipelines.
+**Five durable edges:** ① open methodology (forkable scoring, not a black box) · ② agent-native (measure *and* fix in one Claude session) · ③ free + self-hostable (your prompt strategy never leaves your machine) · ④ white-label by default · ⑤ composable (a plugin *and* an MCP server, drops into CI and other agents).
+
+> **Scope:** Claude-only by design — the hero deliverable is the **Brand Visibility on Claude** report. The engine is built model-agnostic so other engines *can* be added later, but Claude is the whole point of v1.
 
 ---
 
 ## The "Brand Visibility on Claude" report — 6 scored dimensions
 
 **Presence** · **Share of Voice** · **Prominence** · **Sources** · **Sentiment & Positioning** · **Accuracy**
+
+Each blends into a single 0–100 headline score, computed in [auditable code](./packages/engine/src/report.ts) you can read and tune.
 
 ---
 
@@ -189,6 +244,8 @@ Everything below is **MIT-licensed and free**.
 
 **Tally:** 61 features — **34 distinct (★)**, 27 at-or-above best-in-class parity (⚔️) — all MIT.
 
+> **Shipping now (v0.1):** dimensions 2–4, 7, 9–10, 15–16, 49–50 and the Claude-native core (54–58, 60–61) are implemented and tested. The rest of the matrix is the public roadmap below.
+
 ---
 
 ## Architecture (one engine, two frontends)
@@ -197,8 +254,8 @@ Everything below is **MIT-licensed and free**.
                  ┌────────────────────────────┐
                  │   jusBrandMax core engine   │  ← MIT, self-hostable
                  │  prompt runner · scorers ·  │
-                 │  competitors · sources ·    │
-                 │  history · report generator │
+                 │  competitors · history ·    │
+                 │  report generator           │
                  └─────────────┬──────────────┘
               ┌────────────────┴────────────────┐
    CLI plugin (Claude Code)            Cowork plugin (Claude.ai / Desktop)
@@ -207,29 +264,19 @@ Everything below is **MIT-licensed and free**.
         └── also runs as a standalone MCP server + CI/JSON API
 ```
 
+`packages/engine` (core) · `packages/cli` (Claude Code plugin + binary) · `packages/cowork` (MCP + Skill). Built with pnpm + TypeScript; history uses Node's built-in `node:sqlite` (no native build).
+
 ---
 
-## Quickstart
+## Roadmap
 
-Requires Node ≥ 20 and pnpm. jusBrandMax is **bring-your-own-key** — set `ANTHROPIC_API_KEY` (it never leaves your machine).
+- **v0.1 (now):** core report (6 dimensions), competitor leaderboard + gaps, local history + deltas, both plugins, MCP server, CI mode. 49 tests.
+- **Next:** Claude crawler log analyzer (#32–37), citation intelligence (#27–31), the optimization simulator (#39) and in-session content studio (#41), scheduled runs + alerts (#51–52).
+- **Later:** multi-brand workspaces, the full demand-intelligence suite, PDF export.
 
-```bash
-pnpm install && pnpm -r build
+PRs welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md) (every new scorer ships as pure, commented, unit-tested code). Building it or curious about status? See [BUILD_GOAL.md](./BUILD_GOAL.md).
 
-# CLI: scaffold a config, then run a report
-export ANTHROPIC_API_KEY=sk-ant-...
-node packages/cli/dist/main.js init            # writes brand.config.json (edit it)
-node packages/cli/dist/main.js report          # writes brand-report.md + records history
-node packages/cli/dist/main.js watch           # shows the trend vs the previous run
-```
-
-See a sample config and a generated report in [`examples/`](./examples/) — e.g. [`examples/brand-report.md`](./examples/brand-report.md).
-
-**CLI plugin (Claude Code):** the plugin lives in [`packages/cli/plugin/`](./packages/cli/plugin/) — slash commands `/brand-init`, `/brand-report`, `/brand-watch`.
-
-**Cowork plugin (Claude.ai / Claude Desktop):** an MCP server + Agent Skill. Add it as a custom connector pointing at the `jusbrandmax-mcp` stdio server (`node packages/cowork/dist/main.js`); the bundled [`SKILL.md`](./packages/cowork/skill/SKILL.md) lets a marketer just ask *"How visible is my brand on Claude?"*. Tools: `run_brand_report`, `get_history`, `list_competitors`.
-
-Building it (or curious about the plan/status)? See [`BUILD_GOAL.md`](./BUILD_GOAL.md).
+---
 
 ## License
 
