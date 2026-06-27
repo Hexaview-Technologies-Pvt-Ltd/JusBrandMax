@@ -17,7 +17,7 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 
 - **Zero runtime dependencies.** Shipped code imports only the Node standard library (`fetch`, `node:sqlite`, `node:readline`). No SDKs (Anthropic, MCP), no zod. This is the enterprise USP. Dev-only tools (TypeScript, Vitest) are allowed.
 - **MIT-licensed, fully open source.** No paid tier, no telemetry, no phone-home.
-- **Claude-only** for v0.1. Engine stays model-agnostic internally, but only the Claude provider is wired up.
+- **Claude-first.** The hero report and default engine are Claude; the model-agnostic engine also ships an OpenAI-compatible provider (P2) so the same report runs against any OpenAI-compatible engine.
 - **Bring-your-own-key.** Read `ANTHROPIC_API_KEY` from env; never hardcode or commit keys.
 - **Self-hostable / local-first.** All data (config, history, reports) stays on the user's machine.
 - **Open methodology.** Every score is computed in readable code with an inline comment explaining the formula.

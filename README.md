@@ -1,9 +1,9 @@
 # jusBrandMax
 
-**The open-source brand command center for Claude.**
-Measure how visible your brand is on Claude, see exactly what Claude tells people about you, and fix it — without leaving Claude.
+**The open-source brand command center for Claude — and other LLMs.**
+Measure how visible your brand is on Claude (and any OpenAI-compatible engine), see exactly what the model tells people about you, and fix it — without leaving Claude.
 
-![license](https://img.shields.io/badge/license-MIT-green) ![runtime deps](https://img.shields.io/badge/runtime%20deps-0-success) ![tests](https://img.shields.io/badge/tests-62%20passing-brightgreen) ![node](https://img.shields.io/badge/node-%E2%89%A520-blue) ![price](https://img.shields.io/badge/price-%240-blue) ![BYO key](https://img.shields.io/badge/bring--your--own--key-yes-orange)
+![license](https://img.shields.io/badge/license-MIT-green) ![runtime deps](https://img.shields.io/badge/runtime%20deps-0-success) ![tests](https://img.shields.io/badge/tests-73%20passing-brightgreen) ![node](https://img.shields.io/badge/node-%E2%89%A520-blue) ![price](https://img.shields.io/badge/price-%240-blue) ![BYO key](https://img.shields.io/badge/bring--your--own--key-yes-orange)
 
 > Built by **Kashi** ([linkedin](https://www.linkedin.com/in/kashiks/)) and
 > **Rajan** ([linkedin](https://www.linkedin.com/in/thiyagarajan/)), founders of
@@ -157,7 +157,7 @@ jusBrandMax is the only column you can read the source of, run for free, and hos
 
 **Five durable edges:** ① open methodology (forkable scoring, not a black box) · ② agent-native (measure *and* fix in one Claude session) · ③ free + self-hostable (your prompt strategy never leaves your machine) · ④ white-label by default · ⑤ composable (a plugin *and* an MCP server, drops into CI and other agents).
 
-> **Scope:** Claude-only by design — the hero deliverable is the **Brand Visibility on Claude** report. The engine is built model-agnostic so other engines *can* be added later, but Claude is the whole point of v1.
+> **Scope:** Claude-first by design — the hero deliverable is the **Brand Visibility on Claude** report, and Claude is the default. The engine is model-agnostic, so the same report runs against **any OpenAI-compatible engine** (OpenAI, OpenRouter, Together, Groq, or a local/internal model). One tool, Claude and the rest.
 
 ---
 
@@ -299,7 +299,7 @@ Everything below is **MIT-licensed and free**.
 
 **Tally:** 61 features — **34 distinct (★)**, 27 at-or-above best-in-class parity (⚔️) — all MIT.
 
-> **Shipping now (v0.1):** dimensions 2–4, 7, 9–10, 15–16, 49–50 and the Claude-native core (54–58, 60–61) are implemented and tested (62 tests), **with zero runtime dependencies** and an OpenAI-compatible provider for measuring non-Claude engines. The rest of the matrix is the public roadmap below.
+> **Shipping now (v0.1):** dimensions 2–4, 7, 9–10, 15–16, 49–50 and the Claude-native core (54–58, 60–61) are implemented and tested (73 tests), **with zero runtime dependencies** and an OpenAI-compatible provider for measuring non-Claude engines. The rest of the matrix is the public roadmap below.
 
 ---
 
@@ -325,7 +325,7 @@ Everything below is **MIT-licensed and free**.
 
 ## Roadmap
 
-- **v0.1 (now):** core report (6 dimensions), competitor leaderboard + gaps, local history + deltas, both plugins, **zero-dependency** MCP server, CI mode, and an **OpenAI-compatible provider** (P2) for measuring non-Claude engines. 62 tests.
+- **v0.1 (now):** core report (6 dimensions), competitor leaderboard + gaps, local history + deltas, both plugins, **zero-dependency** MCP server, CI mode, and an **OpenAI-compatible provider** (P2) for measuring non-Claude engines. 73 tests.
 - **Next:** **cross-engine diff** (Claude vs OpenAI side-by-side), public **visibility SVG badge** + **GitHub Action CI gate**, first-class docs/config for **OpenCode / Codex / Cursor**, Claude crawler log analyzer (#32–37), citation intelligence (#27–31).
 - **Later:** optimization simulator (#39) + in-session content studio (#41), scheduled runs + alerts (#51–52), multi-brand workspaces, "fix-it PR" generator, ChatGPT/Gemini consumer-surface drivers, PDF export.
 

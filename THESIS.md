@@ -45,6 +45,63 @@ Three curves are crossing at once:
 If you can't see what the model says about you, you can't manage it. **Brand visibility on LLMs is
 becoming as fundamental as SEO was — and it's still early enough to own.**
 
+## How search traffic is shifting
+
+Traditional search was a *navigational* layer: a query returned a ranked list of links, the
+person clicked through, and the destination site captured the visit, the context, and the data.
+Three changes are quietly dismantling that model — and none of them depend on any single product
+or company; they're happening across the whole category at once.
+
+1. **The answer moves into the results.** Result pages increasingly lead with a synthesized answer
+   composed from many sources. For a large and growing share of informational *and* commercial
+   queries, the click to a website becomes optional. "Zero-click" stops being an edge case and
+   becomes the default.
+2. **The query moves to the assistant.** A growing share of the questions people used to type into
+   a search box are now asked conversationally to an AI assistant, which returns one synthesized
+   answer instead of ten links to choose from.
+3. **The intent gets richer.** Because an assistant can actually answer a long, specific,
+   decision-shaped question in one turn ("which option is best for my situation, given these
+   constraints?"), people increasingly bring it exactly the high-intent, late-funnel queries that
+   used to be the most valuable clicks of all.
+
+The net effect is a transfer of where value is captured: **from the link to the answer.** Organic
+click-through to brand-owned pages compresses, and "being visible" stops meaning *ranking on a
+page* and starts meaning *being in the answer*.
+
+### How e-commerce search is being influenced
+
+Product research is the most affected surface of all, because the assistant quietly takes over the
+jobs that search rankings, category pages, and review sections used to do:
+
+- **The assistant becomes the merchandiser.** It decides which products make the shortlist, in what
+  order, and with what framing — the role a ranked results page plus a wall of reviews used to play,
+  now compressed into a single recommendation.
+- **Discovery decouples from your storefront.** A shopper can move from *"what should I buy"* to a
+  decision without ever loading a search-results page, a category page, or a product page you
+  control — or can measure.
+- **Reviews arrive pre-digested.** The assistant collapses thousands of opinions into a one-line
+  verdict ("reliable but pricey," "great value for beginners"). That verdict — not the star rating —
+  is what the buyer carries to checkout.
+- **Comparison happens off-platform.** "A vs. B vs. C" used to mean open tabs and your retargeting.
+  Now it's one turn in a conversation, and only the winner is surfaced.
+
+### Why this matters
+
+- **The deciding step goes dark.** The moment that determines the sale now happens inside a
+  conversation you don't host and can't see in your analytics. The funnel didn't get shorter — its
+  most important step became invisible.
+- **Visibility is winner-skewed.** One recommendation, not ten links. Absence isn't "page two,"
+  it's *not in the answer at all.*
+- **It compounds.** Assistants increasingly reuse what they already "believe" about a category, so
+  early presence hardens into durable presence — and early absence hardens into durable absence.
+- **It's only defensible if it's measured.** As the answer layer begins to monetize, the brands that
+  already track their organic share of the answer will be the ones that know what's worth defending,
+  and what they're paying to defend.
+
+This is precisely why jusBrandMax measures presence, share of voice, prominence, sentiment, and
+accuracy across **both direct and indirect intent** — to make that now-invisible deciding step
+visible and manageable again.
+
 ## Special report: E-commerce brand visibility
 
 E-commerce is the first battleground, and the most exposed.
