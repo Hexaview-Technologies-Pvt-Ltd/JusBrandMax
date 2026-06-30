@@ -22,7 +22,7 @@ The headline deliverable: running one command produces a **Brand Visibility on C
 - **Self-hostable / local-first.** All data (config, history, reports) stays on the user's machine.
 - **Open methodology.** Every score is computed in readable code with an inline comment explaining the formula.
 - **White-label.** Reports carry no jusBrandMax branding unless the user opts in.
-- Repo lives under the **KashiKS** GitHub account. Copyright: Kashinath KS. (Git remote is set later, not by the loop.)
+- Repo lives under the **Kashi-KS** GitHub account. Copyright: Kashinath KS. (Git remote is set later, not by the loop.)
 
 ## Stack (decided — don't re-litigate)
 

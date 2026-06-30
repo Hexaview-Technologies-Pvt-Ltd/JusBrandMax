@@ -5,7 +5,7 @@
   "type": "module",
   "description": "The open-source brand command center for Claude — measure, diagnose, and fix your brand's visibility on Claude.",
   "license": "MIT",
-  "author": "Kashinath KS (KashiKS)",
+  "author": "Kashinath KS (Kashi-KS)",
   "engines": {
     "node": ">=20"
   },
