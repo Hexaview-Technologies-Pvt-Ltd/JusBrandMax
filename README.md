@@ -3,11 +3,12 @@
 **The open-source brand command center for Claude — and other LLMs.**
 Measure how visible your brand is on Claude (and any OpenAI-compatible engine), see exactly what the model tells people about you, and fix it — without leaving Claude.
 
-![license](https://img.shields.io/badge/license-MIT-green) ![runtime deps](https://img.shields.io/badge/runtime%20deps-0-success) ![tests](https://img.shields.io/badge/tests-82%20passing-brightgreen) ![node](https://img.shields.io/badge/node-%E2%89%A520-blue) ![price](https://img.shields.io/badge/price-%240-blue) ![BYO key](https://img.shields.io/badge/bring--your--own--key-yes-orange)
+![license](https://img.shields.io/badge/license-MIT-green) ![runtime deps](https://img.shields.io/badge/runtime%20deps-0-success) ![tests](https://img.shields.io/badge/tests-82%20passing-brightgreen) ![node](https://img.shields.io/badge/node-%E2%89%A520-blue) ![price](https://img.shields.io/badge/price-%240-blue) ![BYO key](https://img.shields.io/badge/bring--your--own--key-yes-orange) [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2?logo=githubsponsors)](https://github.com/sponsors/Kashi-KS)
 
 > Built by **Kashi** ([linkedin](https://www.linkedin.com/in/kashiks/)) and
-> **Rajan** ([linkedin](https://www.linkedin.com/in/thiyagarajan/)), founders of
-> [Kalmantic](https://www.kalmantic.com). **MIT licensed.**
+> **Ankit** ([github](https://github.com/hexa-ankit)). An **Open Source Initiative by [HexaviewTech.com](https://www.hexaviewtech.com)**. **MIT licensed.**
+>
+> **Contributors:** Kashi and Ankit. *(Claude / AI tooling is not a contributor or author.)*
 
 When buyers research your category, more and more of them ask **Claude** instead of Google. If Claude doesn't mention you — or worse, says something wrong about you — you lose the deal before you ever hear about it. jusBrandMax turns that invisible conversation into a **scored report you can act on**, runs entirely on your machine with your own API key, and lets Claude *fix* what it finds in the same session. Every paid tool in this space is closed SaaS at **$29–$5,000+/mo**; jusBrandMax is **$0, open source, and self-hostable.**
 
