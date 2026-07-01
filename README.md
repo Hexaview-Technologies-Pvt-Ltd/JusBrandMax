@@ -29,7 +29,7 @@ Search told people *where to look*; LLMs tell people *what to choose*. Discovery
 
 **As a Claude Code plugin** — from inside Claude Code, run these **one at a time** (one slash command per prompt):
 
-1. `/plugin marketplace add https://github.com/Kashi-KS/jusBrandMax.git`
+1. `/plugin marketplace add https://github.com/Hexaview-Technologies-Pvt-Ltd/JusBrandMax.git`
 2. `/plugin install jusbrandmax@jusbrandmax`
 3. `/reload-plugins`
 
@@ -50,7 +50,7 @@ The bundled [Agent Skill](./packages/cowork/skill/SKILL.md) teaches Claude how t
 **From source (works today — Node ≥ 20 + pnpm):**
 
 ```bash
-git clone https://github.com/Kashi-KS/jusBrandMax && cd jusBrandMax
+git clone https://github.com/Hexaview-Technologies-Pvt-Ltd/JusBrandMax && cd JusBrandMax
 pnpm install && pnpm -r build
 export ANTHROPIC_API_KEY=sk-ant-...        # bring-your-own-key; never leaves your machine
 node packages/cli/dist/main.js --help
