@@ -6,7 +6,7 @@ Measure how visible your brand is on Claude (and any OpenAI-compatible engine), 
 ![license](https://img.shields.io/badge/license-MIT-green) ![runtime deps](https://img.shields.io/badge/runtime%20deps-0-success) ![tests](https://img.shields.io/badge/tests-82%20passing-brightgreen) ![node](https://img.shields.io/badge/node-%E2%89%A520-blue) ![price](https://img.shields.io/badge/price-%240-blue) ![BYO key](https://img.shields.io/badge/bring--your--own--key-yes-orange) [![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2?logo=githubsponsors)](https://github.com/sponsors/Kashi-KS)
 
 > Built by **Kashi** ([linkedin](https://www.linkedin.com/in/kashiks/)) and
-> **Ankit** ([github](https://github.com/hexa-ankit)). An **Open Source Initiative by [HexaviewTech.com](https://www.hexaviewtech.com)**. **MIT licensed.**
+> **Ankit** ([github](https://github.com/hexa-ankit)) ([linkedin](https://www.linkedin.com/in/ankitbeit/)). An **Open Source Initiative by [HexaviewTech.com](https://www.hexaviewtech.com)**. **MIT licensed.**
 >
 > **Contributors:** Kashi and Ankit. *(Claude / AI tooling is not a contributor or author.)*
 
